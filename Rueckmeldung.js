@@ -17,10 +17,10 @@
 // Einstellungen nur im Script
 const originalFMSsound = false;  // FMS5 Sound ändern False = Ton aus
 const FMSFarbe = true;  // FMS5 Meldung einfärben
-const ELInListe = true;
 const FMSrot = "rgb(255, 240, 243)";
 const FMSgelb = "rgb(255, 253, 219)";
 const FMSgruen = "rgb(228, 255, 227)";
+const ELInListe = true;
 const fuehrungsfahrzeuge =  [34,3]; // Liste mit Führungsfahrzeugen. Der erste eintrag übernimmt immer die EL, falls vorhanden
 // Liste mit Fahrzeug IDs: https://forum.leitstellenspiel.de/index.php?thread/8406-infos-f%C3%BCr-entwickler/&pageNo=1
 
