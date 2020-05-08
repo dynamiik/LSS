@@ -10,6 +10,9 @@
 // ==/UserScript==
 /* global $ */
 
+// status 1 mission_id?
+// optionen liste ein-ausblenden
+
 ////////////Einstellungen///////////////
 // Einstellungen nur im Script
 const originalFMSsound = false;  // FMS5 Sound ändern False = Ton aus
@@ -53,24 +56,24 @@ var einsatzleitungen=new Array();
     //Prüft Boolean Status und setzt die Button class
     let button_class = (nurFR) ? "btn-success" : "btn-danger";
     //Fügt Buttons in neue DIV. onclick toggelt Boolean
-    $('<a href="#" class="btn '+button_class+' btn-xs " title="Rueckmeldung nur Bei eintreffen des ersten Fahrzeugs" style="">FR</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
+    $('<a href="#" class="btn '+button_class+' btn-xs " title="First Responder. Rueckmeldung nur Bei eintreffen des ersten Fahrzeugs" style="">FR</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
         .click(function(e){
         nurFR = !nurFR;
         // Buttonfarbe wie Boolean. So oder so
         $(this).hasClass("btn-success") ? $(this).removeClass("btn-success").addClass("btn-danger"): $(this).addClass("btn-success").removeClass("btn-danger");
         return false;
     });
-    button_class = (auchBeiVollstandigkeit) ? "btn-success" : "btn-danger";
-    $('<a href="#" class="btn '+button_class+' btn-xs " title="Rueckmeldung auch wenn alle erforderten Fahrzeuge eingetroffen sind -> Einsatzsymbol Gruen" style="">Gr&uuml;n</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
+    button_class = (sofortBeiEintreffen) ? "btn-success" : "btn-danger";
+    $('<a href="#" class="btn '+button_class+' btn-xs " title="Rueckmeldung obwohl noch Fahrzeuge auf anfahrt sind -> Einsatzsymbol Gelb" style="">Anfahrt</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
         .click(function(e){
-        auchBeiVollstandigkeit = !auchBeiVollstandigkeit;
+        sofortBeiEintreffen = !sofortBeiEintreffen;
         $(this).hasClass("btn-success") ? $(this).removeClass("btn-success").addClass("btn-danger"): $(this).addClass("btn-success").removeClass("btn-danger");
         return false;
     });
-    button_class = (sofortBeiEintreffen) ? "btn-success" : "btn-danger";
-    $('<a href="#" class="btn '+button_class+' btn-xs " title="Rueckmeldung obwohl noch Fahrzeuge auf anfahrt sind -> Einsatzsymbol Gelb" style="">Gelb</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
+    button_class = (auchBeiVollstandigkeit) ? "btn-success" : "btn-danger";
+    $('<a href="#" class="btn '+button_class+' btn-xs " title="Abschliessende Lagemeldung wenn alle erforderten Fahrzeuge eingetroffen sind -> Einsatzsymbol Gruen" style="">ASL</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
         .click(function(e){
-        sofortBeiEintreffen = !sofortBeiEintreffen;
+        auchBeiVollstandigkeit = !auchBeiVollstandigkeit;
         $(this).hasClass("btn-success") ? $(this).removeClass("btn-success").addClass("btn-danger"): $(this).addClass("btn-success").removeClass("btn-danger");
         return false;
     });
