@@ -154,6 +154,8 @@ var einsatzleitungen=new Array();
         if(_vehicles_missing == ""){
             _vehicles_missing="Es werden keine weiteren Kräfte benötigt. Bereitschaft kann aufgelöst werden.";
             if($('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text()!="") _vehicles_missing = _vehicles_missing+ " Gesch&auml;tzte Einsatzdauer: "+$('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text();
+            einsatzleitungen[eNummer][4]=_vehicles_missing;
+            return; 
         }
         // Fehlende Fahrzeuge Text geändert? Rüchmeldung zu <noch nicht getätigt>
         if(einsatzleitungen[eNummer][4]!=_vehicles_missing && einsatzleitungen[eNummer][5] && !nurFR) einsatzleitungen[eNummer][5]=false;
