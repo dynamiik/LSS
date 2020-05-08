@@ -10,9 +10,6 @@
 // ==/UserScript==
 /* global $ */
 
-// status 1 mission_id?
-// optionen liste ein-ausblenden
-
 ////////////Einstellungen///////////////
 // Einstellungen nur im Script
 const originalFMSsound = false;  // FMS5 Sound ändern False = Ton aus
