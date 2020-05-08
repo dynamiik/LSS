@@ -7,6 +7,8 @@
 // @match        https://www.leitstellenspiel.de/*
 // @include      *://www.leitstellenspiel.de/
 // @include      *://www.leitstellenspiel.de/*
+// @include      *://www.missionchief.co.uk/*
+// @include      *://www.missionchief.com/*
 // ==/UserScript==
 /* global $ */
 
@@ -16,7 +18,7 @@
 ////////////Einstellungen///////////////
 // Einstellungen nur im Script
 const originalFMSsound = false;  // FMS5 Sound ändern False = Ton aus
-const FMSFarbe = true;  // FMS5 Meldung einfärben
+const FMSIcon = true;  // FMS5 Meldung einfärben
 const FMSrot = "rgba(255, 104, 134, 0.2)"; // Hintergrundfarben
 const FMSgelb = "rgba(255, 241, 0, 0.25)";
 const FMSgruen = "rgba(61, 255, 53, 0.2)";
@@ -29,7 +31,54 @@ var verband = false; // Rueckmeldung auch bei Verbandseinsatz(true)
 var nurFR = false; // Rueckmeldung nur bei eintreffen des ersten Fahrzeugs (true) Rueckmeldung bei eintreffen nachrückender Fahrzeuge(false)
 var sofortBeiEintreffen=true; //Rueckmeldung obwohl noch Fahrzeuge auf anfahrt sind -> Einsatzsymbol Gelb (true) Rueckmeldung nur wenn keine Fahrzeuge auf anfahrt sind -> Einsatzsymbol rot(false)
 var auchBeiVollstandigkeit=true; //Rueckmeldung auch wenn alle erforderten Fahrzeuge eingetroffen sind -> Einsatzsymbol Gruen(true)
+
+// Language
+
 ///////////////ENDE//////////////////////
+var textVerband, textAusbreitung, textASL, textBtnFR, textBtnFRinfo, textBtnAnfahrt, textBtnAnfahrtInfo, textBtnASL, textASLdauer, textBtnASLinfo, textBtnVE, textBtnVEinfo;
+if(I18n.locale == "de_DE"){
+    textVerband = "Verband"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
+    textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
+    textASL = "Es werden keine weiteren Kräfte benötigt. Bereitschaft kann aufgelöst werden."; //Abschließende Lagemeldung Text
+    textASLdauer = " Gesch&auml;tzte Einsatzdauer: ";
+    //Buttons
+    textBtnFR = "FR";
+    textBtnFRinfo = "First Responder. Rueckmeldung nur Bei eintreffen des ersten Fahrzeugs"
+    textBtnAnfahrt ="Anfahrt";
+    textBtnAnfahrtInfo= "Rueckmeldung obwohl noch Fahrzeuge auf anfahrt sind -> Einsatzsymbol Gelb";
+    textBtnASL ="ASL";
+    textBtnASLinfo="Abschliessende Lagemeldung wenn alle erforderten Fahrzeuge eingetroffen sind -> Einsatzsymbol Gruen";
+    textBtnVE="VE";
+    textBtnVEinfo="Rueckmeldung auch bei Verbandseinsatz";
+} else if(I18n.locale == "en_US"){
+    textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
+    textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
+    textASL = "All required units on scene. "; //Abschließende Lagemeldung Text
+    textASLdauer = " Estimated time: ";
+    //Buttons
+    textBtnFR = "FR";
+    textBtnFRinfo = "First Responder. Call only from first responder"
+    textBtnAnfahrt ="Dispatched";
+    textBtnAnfahrtInfo= "Call when units are on the way -> Mission symbol yellow";
+    textBtnASL ="On scene";
+    textBtnASLinfo="Call when all required units on scene -> Mission symbol green";
+    textBtnVE="AM";
+    textBtnVEinfo="Get Calls on Alliance Missions";
+} else if(I18n.locale == "en_GB"){
+    textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
+    textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
+    textASL = "All required units on scene. "; //Abschließende Lagemeldung Text
+    textASLdauer = " Estimated time: ";
+    //Buttons
+    textBtnFR = "FR";
+    textBtnFRinfo = "First Responder. Call only from first responder"
+    textBtnAnfahrt ="Dispatched";
+    textBtnAnfahrtInfo= "Call when units are on the way -> Mission symbol yellow";
+    textBtnASL ="On scene";
+    textBtnASLinfo="Call when all required units on scene -> Mission symbol green";
+    textBtnVE="AM";
+    textBtnVEinfo="Get Calls on Alliance Missions";
+}
 
 const my_user_id=user_id;
 // Array mit laufenden und abgeschlossenen Einsätzen
@@ -47,16 +96,16 @@ var einsatzleitungen=new Array();
     let radioMessageBuffer = radioMessage;
     radioMessage = function(t){
         // Sendet Orginalstatus
-        init(t);
         if(t.user_id==my_user_id)t=eAusbreitung(t);
         radioMessageBuffer(t);
+        init(t);
     }
     //Fügt neues DIV für Buttons hinzu. Gleich wie bei Einsatzliste oder Fahrzeugfilterliste
     $('<div class="btn-group"></div>').appendTo($('#radio_outer .panel-heading'));
     //Prüft Boolean Status und setzt die Button class
     let button_class = (nurFR) ? "btn-success" : "btn-danger";
     //Fügt Buttons in neue DIV. onclick toggelt Boolean
-    $('<a href="#" class="btn '+button_class+' btn-xs " title="First Responder. Rueckmeldung nur Bei eintreffen des ersten Fahrzeugs" style="">FR</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
+    $('<a href="#" class="btn '+button_class+' btn-xs " title="'+textBtnFRinfo+'" style="">'+textBtnFR+'</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
         .click(function(e){
         nurFR = !nurFR;
         // Buttonfarbe wie Boolean. So oder so
@@ -64,21 +113,21 @@ var einsatzleitungen=new Array();
         return false;
     });
     button_class = (sofortBeiEintreffen) ? "btn-success" : "btn-danger";
-    $('<a href="#" class="btn '+button_class+' btn-xs " title="Rueckmeldung obwohl noch Fahrzeuge auf anfahrt sind -> Einsatzsymbol Gelb" style="">Anfahrt</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
+    $('<a href="#" class="btn '+button_class+' btn-xs " title="'+textBtnAnfahrtInfo+'" style="">'+textBtnAnfahrt+'</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
         .click(function(e){
         sofortBeiEintreffen = !sofortBeiEintreffen;
         $(this).hasClass("btn-success") ? $(this).removeClass("btn-success").addClass("btn-danger"): $(this).addClass("btn-success").removeClass("btn-danger");
         return false;
     });
     button_class = (auchBeiVollstandigkeit) ? "btn-success" : "btn-danger";
-    $('<a href="#" class="btn '+button_class+' btn-xs " title="Abschliessende Lagemeldung wenn alle erforderten Fahrzeuge eingetroffen sind -> Einsatzsymbol Gruen" style="">ASL</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
+    $('<a href="#" class="btn '+button_class+' btn-xs " title="'+textBtnASLinfo+'" style="">'+textBtnASL+'</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
         .click(function(e){
         auchBeiVollstandigkeit = !auchBeiVollstandigkeit;
         $(this).hasClass("btn-success") ? $(this).removeClass("btn-success").addClass("btn-danger"): $(this).addClass("btn-success").removeClass("btn-danger");
         return false;
     });
     button_class = (verband) ? "btn-success" : "btn-danger";
-    $('<a href="#" class="btn '+button_class+' btn-xs " title="Rueckmeldung auch bei Verbandseinsatz" style=";">VE</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
+    $('<a href="#" class="btn '+button_class+' btn-xs " title="'+textBtnVEinfo+'" style=";">'+textBtnVE+'</a>').appendTo($('#radio_outer .panel-heading .btn-group'))
         .click(function(e){
         verband = !verband;
         $(this).hasClass("btn-success") ? $(this).removeClass("btn-success").addClass("btn-danger"): $(this).addClass("btn-success").removeClass("btn-danger");
@@ -105,26 +154,19 @@ var einsatzleitungen=new Array();
             // Array [mission_id, vehicle_id, vehicle_type_id, vehicle_name, fehlende Fahrzeuge Text, Boolean wurdeRückmeldungSchonGetätigt]
             // eNummer = ArrayIndex von aktuellem Einsatz
             let eNummer = set_einsatzleitungen(mission_id, vehicle_id, vehicle_type_id, vehicle_name);
-            if(einsatzleitungen[eNummer][5]) return;
+            //if(einsatzleitungen[eNummer][5]) return;
             // Missionstitle aus der Missionsliste
-            var mission_title = $('#mission_caption_'+einsatzleitungen[eNummer][0]).text().search('Verband');
+            var mission_title = $('#mission_caption_'+einsatzleitungen[eNummer][0]).text().search(textVerband);
             if(!verband && mission_title != -1) return;
             var tout = setTimeout(function(){
                 // Farbe des Icons aus der Missionsliste
-                var iconfarbe = $('#mission_panel_'+einsatzleitungen[eNummer][0]+' img').attr('src').split(/_|\./)[1];
-                if((iconfarbe=='gelb' || iconfarbe=='gelb')&&sofortBeiEintreffen){
-                    sendRueckmeldung(eNummer);
-                    //FMS-Meldung Hintergrundfarbe zu Hell-Gelb für bessere Übersicht
-                    if(FMSFarbe)$("#radio_messages_important").children('.radio_message_vehicle_'+einsatzleitungen[eNummer][1]).css("background-color", FMSgelb);
-                }
-                if((iconfarbe=='green' || iconfarbe=='gruen')&&auchBeiVollstandigkeit){
-                    sendRueckmeldung(eNummer);
-                    if(FMSFarbe)$("#radio_messages_important").children('.radio_message_vehicle_'+einsatzleitungen[eNummer][1]).css("background-color", FMSgruen);
-                }
-                if(iconfarbe=='red' || iconfarbe=='rot'){
-                    sendRueckmeldung(eNummer);
-                    if(FMSFarbe)$("#radio_messages_important").children('.radio_message_vehicle_'+einsatzleitungen[eNummer][1]).css("background-color", FMSrot);
-                }
+                var icon = $('#mission_panel_'+einsatzleitungen[eNummer][0]+' img').attr('src');
+                var iconfarbe = icon.split(/_|\./)[1];
+                if((iconfarbe=='gelb' || iconfarbe=='gelb')&&sofortBeiEintreffen) sendRueckmeldung(eNummer);
+                if((iconfarbe=='green' || iconfarbe=='gruen')&&auchBeiVollstandigkeit) sendRueckmeldung(eNummer);
+                if(iconfarbe=='red' || iconfarbe=='rot')sendRueckmeldung(eNummer);
+                // Setze Icon in FMS Meldung
+                if(FMSIcon)$('<img src="'+icon+'" id="mission_vehicle_state_fms5_icon'+einsatzleitungen[eNummer][1]+'" class="mission_vehicle_state" style="margin-left: 5px;">').insertAfter($('#radio_messages_important .radio_message_vehicle_'+einsatzleitungen[eNummer][1]+' .radio_message_close'));
             }, 15000);
         }
         return;
@@ -152,10 +194,9 @@ var einsatzleitungen=new Array();
         // Fehlende Fahrzeuge Text aus Missionsliste
         let _vehicles_missing = $('#mission_missing_'+einsatzleitungen[eNummer][0]).text();
         if(_vehicles_missing == ""){
-            _vehicles_missing="Es werden keine weiteren Kräfte benötigt. Bereitschaft kann aufgelöst werden.";
-            if($('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text()!="") _vehicles_missing = _vehicles_missing+ " Gesch&auml;tzte Einsatzdauer: "+$('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text();
-            einsatzleitungen[eNummer][4]=_vehicles_missing;
-            return; 
+            if(einsatzleitungen[eNummer][4].search(textASL)!=-1) return;
+            _vehicles_missing=textASL;
+            if($('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text()!="") _vehicles_missing = _vehicles_missing+textASLdauer+$('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text();
         }
         // Fehlende Fahrzeuge Text geändert? Rüchmeldung zu <noch nicht getätigt>
         if(einsatzleitungen[eNummer][4]!=_vehicles_missing && einsatzleitungen[eNummer][5] && !nurFR) einsatzleitungen[eNummer][5]=false;
@@ -164,7 +205,7 @@ var einsatzleitungen=new Array();
     }
     // Bei FMS5 Einsatzausbreitung Meldung von EL Fahrzeug
     function eAusbreitung(_t){
-        if(_t.additionalText.search('ausgebreitet')==-1)return _t;
+        if(_t.additionalText.search(textAusbreitung)==-1)return _t;
         for(let i=0; i<einsatzleitungen.length; i++){
             if(einsatzleitungen[i][0] == _t.mission_id){
                 _t.caption=einsatzleitungen[i][3];
