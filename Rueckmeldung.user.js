@@ -153,26 +153,24 @@ var einsatzleitungen=new Array();
             var vehicle_type_id = $('#vehicle_list_'+vehicle_id+' a').attr('vehicle_type_id');
             // Array [mission_id, vehicle_id, vehicle_type_id, vehicle_name, fehlende Fahrzeuge Text, Boolean wurdeRückmeldungSchonGetätigt]
             // eNummer = ArrayIndex von aktuellem Einsatz
-            let eNummer = set_einsatzleitungen(mission_id, vehicle_id, vehicle_type_id, vehicle_name);
+            let eNummer = set_einsatzleitungen(mission_id, vehicle_id, vehicle_type_id, vehicle_name, "rot");
             //if(einsatzleitungen[eNummer][5]) return;
             // Missionstitle aus der Missionsliste
             var mission_title = $('#mission_caption_'+einsatzleitungen[eNummer][0]).text().search(textVerband);
             if(!verband && mission_title != -1) return;
             var tout = setTimeout(function(){
                 // Farbe des Icons aus der Missionsliste
-                var icon = $('#mission_panel_'+einsatzleitungen[eNummer][0]+' img').attr('src');
-                var iconfarbe = icon.split(/_|\./)[1];
-                if((iconfarbe=='gelb' || iconfarbe=='gelb')&&sofortBeiEintreffen) sendRueckmeldung(eNummer);
-                if((iconfarbe=='green' || iconfarbe=='gruen')&&auchBeiVollstandigkeit) sendRueckmeldung(eNummer);
-                if(iconfarbe=='red' || iconfarbe=='rot')sendRueckmeldung(eNummer);
-                // Setze Icon in FMS Meldung
-                if(FMSIcon)$('<img src="'+icon+'" id="mission_vehicle_state_fms5_icon'+einsatzleitungen[eNummer][1]+'" class="mission_vehicle_state" style="margin-left: 5px;">').insertAfter($('#radio_messages_important .radio_message_vehicle_'+einsatzleitungen[eNummer][1]+' .radio_message_close'));
+                let icon = $('#mission_panel_'+einsatzleitungen[eNummer][0]+' img').attr('src');
+                let iconfarbe = icon.split(/_|\./)[1];
+                if((iconfarbe=='gelb' || iconfarbe=='gelb')&&sofortBeiEintreffen) sendRueckmeldung(eNummer,icon);
+                if((iconfarbe=='green' || iconfarbe=='gruen')&&auchBeiVollstandigkeit) sendRueckmeldung(eNummer, icon);
+                if(iconfarbe=='red' || iconfarbe=='rot')sendRueckmeldung(eNummer, icon);
             }, 15000);
         }
         return;
     }
     // Sende FMS 5 Meldung
-    function sendRueckmeldung(eNummer){
+    function sendRueckmeldung(eNummer, _icon){
         refresh_vehicle_missing(eNummer);
         if(einsatzleitungen[eNummer][5]) return;
         radioMessage({"target_building_id":0,
@@ -187,12 +185,15 @@ var einsatzleitungen=new Array();
                       "caption":einsatzleitungen[eNummer][3]});
         // Boolean true; Die Rückmeldung wurde abgeschickt
         einsatzleitungen[eNummer][5]=true;
+        // Setze Icon in FMS Meldung
+        if(FMSIcon)$('<img src="'+einsatzleitungen[eNummer][6]+'" id="mission_vehicle_state_fms5_icon'+einsatzleitungen[eNummer][1]+'" class="mission_vehicle_state" style="margin-left: 5px;">').insertAfter($('#radio_messages_important .radio_message_vehicle_'+einsatzleitungen[eNummer][1]+' .radio_message_close'));
         return;
     }
     //Aktuallisiere den Text aus der Missionsbeschreibung des Spiels
     function refresh_vehicle_missing(eNummer){
         // Fehlende Fahrzeuge Text aus Missionsliste
         let _vehicles_missing = $('#mission_missing_'+einsatzleitungen[eNummer][0]).text();
+        let icon = $('#mission_panel_'+einsatzleitungen[eNummer][0]+' img').attr('src');
         if(_vehicles_missing == ""){
             if(einsatzleitungen[eNummer][4].search(textASL)!=-1) return;
             _vehicles_missing=textASL;
@@ -201,6 +202,7 @@ var einsatzleitungen=new Array();
         // Fehlende Fahrzeuge Text geändert? Rüchmeldung zu <noch nicht getätigt>
         if(einsatzleitungen[eNummer][4]!=_vehicles_missing && einsatzleitungen[eNummer][5] && !nurFR) einsatzleitungen[eNummer][5]=false;
         einsatzleitungen[eNummer][4]=_vehicles_missing;
+        einsatzleitungen[eNummer][6]=icon;
         return;
     }
     // Bei FMS5 Einsatzausbreitung Meldung von EL Fahrzeug
@@ -215,7 +217,7 @@ var einsatzleitungen=new Array();
         return _t;
     }
     // Speichere neuen Einsatz im Array
-    function set_einsatzleitungen(_mission_id, _vehicle_id, _vehicle_type_id, _vehicle_name){
+    function set_einsatzleitungen(_mission_id, _vehicle_id, _vehicle_type_id, _vehicle_name, _icon){
         let eNummer = -1;
         let _vehicles_missing = "";
         for(let i=0; i<einsatzleitungen.length; i++){
@@ -223,7 +225,7 @@ var einsatzleitungen=new Array();
         }
         // Einsatz noch nicht im Array
         if(einsatzleitungen.length == 0 || eNummer==-1) {
-            einsatzleitungen.unshift([_mission_id, _vehicle_id, _vehicle_type_id, _vehicle_name, _vehicles_missing, false]);
+            einsatzleitungen.unshift([_mission_id, _vehicle_id, _vehicle_type_id, _vehicle_name, _vehicles_missing, false, _icon]);
             refresh_vehicle_missing(0);
             // EL in Einsatzliste eintragen
             if(ELInListe)$('<div id="einsatzleitung_fahrzeug_'+einsatzleitungen[0][0]+'"> Einsatzleitung: <a href="/vehicles/'+einsatzleitungen[0][1]+'" id="einsatzleitung_fahrzeug_'+einsatzleitungen[0][0]+'btn" class="btn btn-default btn-xs lightbox-open" style="">'+einsatzleitungen[0][3]+'</a></div>').prependTo($('#mission_panel_'+einsatzleitungen[0][0]+' .panel-body .col-xs-11'));
