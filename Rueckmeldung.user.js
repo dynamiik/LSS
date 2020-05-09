@@ -54,7 +54,7 @@ if(I18n.locale == "de_DE"){
     textEinsatzleitung="Einsatzleitung";
 } else if(I18n.locale == "en_US"){
     textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
-    textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
+    textAusbreitung = "Upgrade"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
     textASL = "All required units on scene. "; //Abschließende Lagemeldung Text
     textASLdauer = " Estimated time: ";
     //Buttons
@@ -69,7 +69,7 @@ if(I18n.locale == "de_DE"){
     textEinsatzleitung="Incident Command";
 } else if(I18n.locale == "en_GB"){
     textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
-    textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
+    textAusbreitung = "Upgrade"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
     textASL = "All required units on scene. "; //Abschließende Lagemeldung Text
     textASLdauer = " Estimated time: ";
     //Buttons
