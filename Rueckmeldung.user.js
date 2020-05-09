@@ -196,8 +196,11 @@ var einsatzleitungen=new Array();
         let icon = $('#mission_panel_'+einsatzleitungen[eNummer][0]+' img').attr('src');
         if(_vehicles_missing == ""){
             if(einsatzleitungen[eNummer][4].search(textASL)!=-1) return;
-            _vehicles_missing=textASL;
-            if($('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text()!="") _vehicles_missing = _vehicles_missing+textASLdauer+$('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text();
+            if(icon.split(/_|\./)[1] != "gruen") _vehicles_missing = "Lage noch nicht ausreichend erkundet.";
+            else{
+                _vehicles_missing=textASL;
+                if($('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text()!="") _vehicles_missing = _vehicles_missing+textASLdauer+$('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text();
+            }
         }
         // Fehlende Fahrzeuge Text geändert? Rüchmeldung zu <noch nicht getätigt>
         if(einsatzleitungen[eNummer][4]!=_vehicles_missing && einsatzleitungen[eNummer][5] && !nurFR) einsatzleitungen[eNummer][5]=false;
