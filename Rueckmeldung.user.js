@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FMS-Rueckmeldung TEST
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
+// @version      1.0.0
 // @description  Sendet eine FMS5 Rückmeldung über Fehlende Fahrzeuge
 // @author       Dynamiite
 // @match        https://www.leitstellenspiel.de/*
@@ -36,7 +36,7 @@ var auchBeiVollstandigkeit=true; //Rueckmeldung auch wenn alle erforderten Fahrz
 // Language
 
 ///////////////ENDE//////////////////////
-var textVerband, textAusbreitung, textASL, textBtnFR, textBtnFRinfo, textBtnAnfahrt, textBtnAnfahrtInfo, textBtnASL, textASLdauer, textBtnASLinfo, textBtnVE, textBtnVEinfo;
+var textVerband, textAusbreitung, textASL, textBtnFR, textBtnFRinfo, textBtnAnfahrt, textBtnAnfahrtInfo, textBtnASL, textASLdauer, textBtnASLinfo, textBtnVE, textBtnVEinfo, textEinsatzleitung;
 if(I18n.locale == "de_DE"){
     textVerband = "Verband"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
     textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
@@ -51,6 +51,7 @@ if(I18n.locale == "de_DE"){
     textBtnASLinfo="Abschliessende Lagemeldung wenn alle erforderten Fahrzeuge eingetroffen sind -> Einsatzsymbol Gruen";
     textBtnVE="VE";
     textBtnVEinfo="Rueckmeldung auch bei Verbandseinsatz";
+    textEinsatzleitung="Einsatzleitung";
 } else if(I18n.locale == "en_US"){
     textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
     textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
@@ -65,6 +66,7 @@ if(I18n.locale == "de_DE"){
     textBtnASLinfo="Call when all required units on scene -> Mission symbol green";
     textBtnVE="AM";
     textBtnVEinfo="Get Calls on Alliance Missions";
+    textEinsatzleitung="Incident Command";
 } else if(I18n.locale == "en_GB"){
     textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
     textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
@@ -79,6 +81,7 @@ if(I18n.locale == "de_DE"){
     textBtnASLinfo="Call when all required units on scene -> Mission symbol green";
     textBtnVE="AM";
     textBtnVEinfo="Get Calls on Alliance Missions";
+    textEinsatzleitung="Incident Command";
 }
 
 const my_user_id=user_id;
@@ -233,7 +236,7 @@ var einsatzleitungen=new Array();
 
             refresh_vehicle_missing(einsatzleitungen.length-1);
             // EL in Einsatzliste eintragen
-            if(ELInListe)$('<div id="einsatzleitung_fahrzeug_'+einsatzleitungen[einsatzleitungen.length-1][0]+'"> Einsatzleitung: <a href="/vehicles/'+einsatzleitungen[einsatzleitungen.length-1][1]+'" id="einsatzleitung_fahrzeug_'+einsatzleitungen[einsatzleitungen.length-1][0]+'btn" class="btn btn-default btn-xs lightbox-open" style="">'+einsatzleitungen[einsatzleitungen.length-1][3]+'</a></div>').prependTo($('#mission_panel_'+einsatzleitungen[einsatzleitungen.length-1][0]+' .panel-body .col-xs-11'));
+            if(ELInListe)$('<div id="einsatzleitung_fahrzeug_'+einsatzleitungen[einsatzleitungen.length-1][0]+'"> '+textEinsatzleitung+': <a href="/vehicles/'+einsatzleitungen[einsatzleitungen.length-1][1]+'" id="einsatzleitung_fahrzeug_'+einsatzleitungen[einsatzleitungen.length-1][0]+'btn" class="btn btn-default btn-xs lightbox-open" style="">'+einsatzleitungen[einsatzleitungen.length-1][3]+'</a></div>').prependTo($('#mission_panel_'+einsatzleitungen[einsatzleitungen.length-1][0]+' .panel-body .col-xs-11'));
             return einsatzleitungen.length-1;
         }else{
             // Neues Fahrzeug ELW1/2 > Setze neues Fahrzeug für nachfolgende FMS
