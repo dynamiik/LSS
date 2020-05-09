@@ -169,7 +169,7 @@ var einsatzleitungen=new Array();
                 if((iconfarbe=='green' || iconfarbe=='gruen')&&auchBeiVollstandigkeit) sendRueckmeldung(_eNummer);
                 if(iconfarbe=='red' || iconfarbe=='rot')sendRueckmeldung(_eNummer);
                 if((iconfarbe=='yellow' || iconfarbe=='gelb')&&sofortBeiEintreffen) sendRueckmeldung(_eNummer);
-            }, 30000, eNummer);
+            }, _wartezeit, eNummer);
         }
         return;
     }
