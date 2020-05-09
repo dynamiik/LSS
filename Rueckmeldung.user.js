@@ -44,7 +44,7 @@ if(I18n.locale == "de_DE"){
     textASLdauer = " Gesch&auml;tzte Einsatzdauer: ";
     //Buttons
     textBtnFR = "FR";
-    textBtnFRinfo = "First Responder. Rueckmeldung nur Bei eintreffen des ersten Fahrzeugs"
+    textBtnFRinfo = "First Responder. Rueckmeldung nur beim eintreffen des ersten Fahrzeugs"
     textBtnAnfahrt ="Anfahrt";
     textBtnAnfahrtInfo= "Rueckmeldung obwohl noch Fahrzeuge auf anfahrt sind -> Einsatzsymbol Gelb";
     textBtnASL ="ASL";
