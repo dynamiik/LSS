@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         FMS-Rueckmeldung TEST
+// @name         FMS-Rueckmeldung
 // @namespace    http://tampermonkey.net/
 // @version      1.0.2
 // @description  Sendet eine FMS5 Rückmeldung über Fehlende Fahrzeuge
