@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         Hiding
-// @version      0.0.3
+// @version      1
 // @description  Sachen ausblenden
 // @author       Dynamiite
 // @include      *://leitstellenspiel.de/
 // @include      *://www.leitstellenspiel.de/
 // @grant        none
-// @namespace
 // ==/UserScript==
 /* global $ */
 (function() {
