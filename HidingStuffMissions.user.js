@@ -11,8 +11,9 @@
 (function() {
     var sendVerband=false;
     f_sendVerband();
+    // setzt Button class
     let button_class = (sendVerband) ? "btn-success" : "btn-danger";
-        //Fügt Buttons in neue DIV. onclick toggelt Boolean
+        //Fügt Buttonhinzu. onclick toggelt Boolean und ruft Function auf 
         $('<a href="#" class="btn '+button_class+' btn-sm navbar-btn" title="statusVehicle" style=""><img alt="Hide_ffffff" class="navbar-icon" src="https://www.leitstellenspiel.de/images/alliance.svg" title="Hide"></a>').prependTo($('.navbar-header'))
             .click(function(e){
             sendVerband = !sendVerband;
@@ -23,6 +24,7 @@
         });
     function f_sendVerband(){
         if(!sendVerband){
+            // blendet Freigabe buttons und chat fenster aus
             $('.alert_next_alliance').hide();
             $('.navbar-header').children().last().hide();
             $('form#new_mission_reply').hide()
