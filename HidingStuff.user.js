@@ -22,10 +22,34 @@
     var substringCount = filter.length;
 
     // ruft setIntervall alle 10 sekunden auf
-    var tid = setInterval(check_intervall, 10000);
+    //var tid = setInterval(check_intervall, 10000);
     init();
     check_intervall();
-
+    // Interval alternatives
+    let missionMarkerOrig = missionMarkerAdd;
+    missionMarkerAdd = (e) => {
+        missionMarkerOrig(e);
+        check_intervall();
+    };
+    map.on({
+        zoomend: function() {
+            check_intervall();
+        },
+        moveend: function() {
+            check_intervall();
+        }
+    });
+    let vehicleMarkerAddBuffer = vehicleMarkerAdd;
+    vehicleMarkerAdd = function(e){
+    vehicleMarkerAddBuffer(e)
+    check_intervall();
+    };
+    let radioMessageBuffer = radioMessage;
+    radioMessage = function(t){
+        radioMessageBuffer(t);
+        check_intervall();
+    }
+    // set List
     function init(){ // https://www.leitstellenspiel.de/images/search_5a5753.svg
         $('.nav.navbar-nav.navbar-right').prepend('<li class="dropdown" id="dropdown_hiding_settings"><a href="#" id="hide" role="button" class="dropdown-toggle" data-toggle="dropdown"><img alt="Hide_ffffff" class="navbar-icon" src="https://www.leitstellenspiel.de/images/search_5a5753.svg" title="Hide"><span class="visible-xs">Hide</span><b class="caret"></b></a></li>');
         $('<ul class="dropdown-menu" role="menu" aria-labelledby="news"><li id="dropdown_hiding_settings_1" role="presentation"></li></ul>').appendTo('#dropdown_hiding_settings');
