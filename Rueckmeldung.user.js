@@ -102,6 +102,7 @@ var einsatzleitungen=new Array();
         // Sendet Orginalstatus
         if(t.user_id==my_user_id)t=eAusbreitung(t);
         radioMessageBuffer(t);
+        if((t.fms==5||t.fms==4)&&t.user_id==my_user_id)eMapFinder(t);
         init(t);
     }
     //Fügt neues DIV für Buttons hinzu. Gleich wie bei Einsatzliste oder Fahrzeugfilterliste
@@ -222,6 +223,18 @@ var einsatzleitungen=new Array();
             }
         }
         return _t;
+    }
+    function eMapFinder(_t){
+        setTimeout(()=>{
+            var mission = $("#mission_caption_" + _t.mission_id);
+            var lat = mission.attr("data-latitude");
+            var lng = mission.attr("data-longitude");
+            var address = $("#mission_address_" + _t.mission_id).text();
+            if(!lat || !lng) return;
+            // Fahrzeug typ ID aus der Fahrzeugliste. ELW1=3, ELW2=34
+            $('.radio_message_vehicle_'+_t.id+' > img.vehicle_search').remove();
+            $('.radio_message_vehicle_'+_t.id+' > span.building_list_fms').after('<a title="'+address+'" class="map_position_mover allianceMissionLocator" data-latitude="'+lat+'" data-longitude="' + lng + '"><img src="/images/icons8-location_off.svg" style="width: 20px; height: 20px; margin-right: 5px; cursor: pointer;"></a>');
+        },200);
     }
     // Speichere neuen Einsatz im Array
     function set_einsatzleitungen(_mission_id, _vehicle_id, _vehicle_type_id, _vehicle_name, _icon){
