@@ -224,14 +224,16 @@ var einsatzleitungen=new Array();
         }
         return _t;
     }
+    //Fahrzeugfinden Button ersetzen um Map zu verschieben
     function eMapFinder(_t){
         setTimeout(()=>{
+            //holt sich die Daten aus der Missionsliste
             var mission = $("#mission_caption_" + _t.mission_id);
             var lat = mission.attr("data-latitude");
             var lng = mission.attr("data-longitude");
             var address = $("#mission_address_" + _t.mission_id).text();
-            if(!lat || !lng) return;
-            // Fahrzeug typ ID aus der Fahrzeugliste. ELW1=3, ELW2=34
+            if(!lat || !lng) return;            
+            // löscht den alten Button und erstellt einen neuen
             $('.radio_message_vehicle_'+_t.id+' > img.vehicle_search').remove();
             $('.radio_message_vehicle_'+_t.id+' > span.building_list_fms').after('<a title="'+address+'" class="map_position_mover allianceMissionLocator" data-latitude="'+lat+'" data-longitude="' + lng + '"><img src="/images/icons8-location_off.svg" style="width: 20px; height: 20px; margin-right: 5px; cursor: pointer;"></a>');
         },200);
