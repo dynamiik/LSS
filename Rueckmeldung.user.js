@@ -234,8 +234,10 @@ var einsatzleitungen=new Array();
             var address = $("#mission_address_" + _t.mission_id).text();
             if(!lat || !lng) return;            
             // löscht den alten Button und erstellt einen neuen
+            let background=$('.radio_message_vehicle_'+_t.id+' > img.vehicle_search').css('background-color');
             $('.radio_message_vehicle_'+_t.id+' > img.vehicle_search').remove();
-            $('.radio_message_vehicle_'+_t.id+' > span.building_list_fms').after('<a title="'+address+'" class="map_position_mover allianceMissionLocator" data-latitude="'+lat+'" data-longitude="' + lng + '"><img src="/images/icons8-location_off.svg" style="width: 20px; height: 20px; margin-right: 5px; cursor: pointer;"></a>');
+            $('.radio_message_vehicle_'+_t.id+' > span.building_list_fms').after('<a title="'+address+'" class="map_position_mover allianceMissionLocator" data-latitude="'+lat+'" data-longitude="' + lng + '"><img id="neueeinsatzsuchenid_'+_t.id+'" src="/images/icons8-location_off.svg" style="width: 20px; height: 20px; margin-right: 5px; cursor: pointer;"></a>');
+            $('#neueeinsatzsuchenid_'+_t.id).css('background-color', background);
         },200);
     }
     // Speichere neuen Einsatz im Array
