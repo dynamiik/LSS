@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FMS-Rueckmeldung
 // @namespace    http://tampermonkey.net/
-// @version      1.0.3
+// @version      1.0.4
 // @description  Sendet eine FMS5 Rückmeldung über Fehlende Fahrzeuge
 // @author       Dynamiite
 // @match        https://www.leitstellenspiel.de/*
