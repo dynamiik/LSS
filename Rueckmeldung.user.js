@@ -36,7 +36,7 @@ var auchBeiVollstandigkeit=true; //Rueckmeldung auch wenn alle erforderten Fahrz
 // Language
 
 ///////////////ENDE//////////////////////
-var textVerband, textAusbreitung, textASL, textBtnFR, textBtnFRinfo, textBtnAnfahrt, textBtnAnfahrtInfo, textBtnASL, textASLdauer, textBtnASLinfo, textBtnVE, textBtnVEinfo, textEinsatzleitung;
+var textVerband, textAusbreitung, textASL, textBtnFR, textBtnFRinfo, textBtnAnfahrt, textBtnAnfahrtInfo, textBtnASL, textASLdauer, textBtnASLinfo, textBtnVE, textBtnVEinfo, textEinsatzleitung, textUnbekannteLage;
 if(I18n.locale == "de_DE"){
     textVerband = "Verband"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
     textAusbreitung = "ausgebreitet"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
@@ -52,6 +52,7 @@ if(I18n.locale == "de_DE"){
     textBtnVE="VE";
     textBtnVEinfo="Rueckmeldung auch bei Verbandseinsatz";
     textEinsatzleitung="Einsatzleitung";
+    textUnbekannteLage="Lage noch nicht ausreichend erkundet.";
 } else if(I18n.locale == "en_US"){
     textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
     textAusbreitung = "Upgrade"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
@@ -67,6 +68,7 @@ if(I18n.locale == "de_DE"){
     textBtnVE="AM";
     textBtnVEinfo="Get Calls on Alliance Missions";
     textEinsatzleitung="Incident Command";
+    textUnbekannteLage="Situation has not yet been investigated.";
 } else if(I18n.locale == "en_GB"){
     textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
     textAusbreitung = "Upgrade"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
@@ -82,6 +84,7 @@ if(I18n.locale == "de_DE"){
     textBtnVE="AM";
     textBtnVEinfo="Get Calls on Alliance Missions";
     textEinsatzleitung="Incident Command";
+    textUnbekannteLage="Situation has not yet been investigated";
 }
 
 const my_user_id=user_id;
@@ -202,7 +205,7 @@ var einsatzleitungen=new Array();
         let icon = $('#mission_panel_'+einsatzleitungen[eNummer][0]+' img').attr('src');
         if(_vehicles_missing == ""){
             if(einsatzleitungen[eNummer][4].search(textASL)!=-1) return;
-            if(!$('#mission_panel_'+einsatzleitungen[eNummer][0]).hasClass('mission_panel_green')) _vehicles_missing = "Lage noch nicht ausreichend erkundet.";
+            if(!$('#mission_panel_'+einsatzleitungen[eNummer][0]).hasClass('mission_panel_green')) _vehicles_missing = textUnbekannteLage;
             else{
                 _vehicles_missing=textASL;
                 if($('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text()!="") _vehicles_missing = _vehicles_missing+textASLdauer+$('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text();
@@ -263,7 +266,7 @@ var einsatzleitungen=new Array();
                     einsatzleitungen[eNummer][1]=_vehicle_id;
                     einsatzleitungen[eNummer][2]=_vehicle_type_id;
                     einsatzleitungen[eNummer][3]=_vehicle_name;
-                    if(ELInListe)$('#einsatzleitung_fahrzeug_'+einsatzleitungen[eNummer][0]).replaceWith('<div id="einsatzleitung_fahrzeug_'+einsatzleitungen[eNummer][0]+'"> Einsatzleitung: <a href="/vehicles/'+einsatzleitungen[eNummer][1]+'" id="einsatzleitung_fahrzeug_'+einsatzleitungen[eNummer][0]+'btn" class="btn btn-default btn-xs lightbox-open" style="">'+einsatzleitungen[eNummer][3]+'</a></div>');
+                    if(ELInListe)$('#einsatzleitung_fahrzeug_'+einsatzleitungen[eNummer][0]).replaceWith('<div id="einsatzleitung_fahrzeug_'+einsatzleitungen[eNummer][0]+'"> '+textEinsatzleitung+': <a href="/vehicles/'+einsatzleitungen[eNummer][1]+'" id="einsatzleitung_fahrzeug_'+einsatzleitungen[eNummer][0]+'btn" class="btn btn-default btn-xs lightbox-open" style="">'+einsatzleitungen[eNummer][3]+'</a></div>');
                 }
             }
             refresh_vehicle_missing(eNummer);
