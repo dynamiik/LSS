@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FMS-Rueckmeldung
 // @namespace    http://tampermonkey.net/
-// @version      1.0.4
+// @version      1.0.5
 // @description  Sendet eine FMS5 Rückmeldung über Fehlende Fahrzeuge
 // @author       Dynamiite
 // @match        https://www.leitstellenspiel.de/*
@@ -165,11 +165,12 @@ var einsatzleitungen=new Array();
             let _wartezeit = wartezeit*1000;
             var tout = setTimeout(function(_eNummer){
                 // Farbe des Icons aus der Missionsliste
+                let klasse = $('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_red')
                 let icon = $('#mission_panel_'+einsatzleitungen[_eNummer][0]+' img').attr('src');
                 let iconfarbe = icon.split(/_|\./)[1];
-                if((iconfarbe=='green' || iconfarbe=='gruen')&&auchBeiVollstandigkeit) sendRueckmeldung(_eNummer);
-                if(iconfarbe=='red' || iconfarbe=='rot')sendRueckmeldung(_eNummer);
-                if((iconfarbe=='yellow' || iconfarbe=='gelb')&&sofortBeiEintreffen) sendRueckmeldung(_eNummer);
+                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_green')&&auchBeiVollstandigkeit) sendRueckmeldung(_eNummer);
+                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_red'))sendRueckmeldung(_eNummer);
+                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_yellow')&&sofortBeiEintreffen) sendRueckmeldung(_eNummer);
             }, _wartezeit, eNummer);
         }
         return;
