@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FMS-Rueckmeldung
 // @namespace    http://tampermonkey.net/
-// @version      1.0.5
+// @version      1.0.6
 // @description  Sendet eine FMS5 Rückmeldung über Fehlende Fahrzeuge
 // @author       Dynamiite
 // @match        https://www.leitstellenspiel.de/*
@@ -202,7 +202,7 @@ var einsatzleitungen=new Array();
         let icon = $('#mission_panel_'+einsatzleitungen[eNummer][0]+' img').attr('src');
         if(_vehicles_missing == ""){
             if(einsatzleitungen[eNummer][4].search(textASL)!=-1) return;
-            if(icon.split(/_|\./)[1] != "gruen") _vehicles_missing = "Lage noch nicht ausreichend erkundet.";
+            if(!$('#mission_panel_'+einsatzleitungen[eNummer][0]).hasClass('mission_panel_green')) _vehicles_missing = "Lage noch nicht ausreichend erkundet.";
             else{
                 _vehicles_missing=textASL;
                 if($('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text()!="") _vehicles_missing = _vehicles_missing+textASLdauer+$('#mission_overview_countdown_'+einsatzleitungen[eNummer][0]).text();
