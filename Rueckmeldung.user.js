@@ -68,7 +68,7 @@ if(I18n.locale == "de_DE"){
     textBtnVE="AM";
     textBtnVEinfo="Get Calls on Alliance Missions";
     textEinsatzleitung="Incident Command";
-    textUnbekannteLage="Situation has not yet been investigated.";
+    textUnbekannteLage="Situation has not yet been fully investigated.";
 } else if(I18n.locale == "en_GB"){
     textVerband = "Alliance"; // Verbandseinsatz text keywort aus der Missionsbeschreibung. In D wäre es das [Verband] vor dem Einsatznamen
     textAusbreitung = "Upgrade"; //Das Keywort das in der normalen FMS 5 Einsatzausbreitung kommt. In D wäre es ausgebreitet.
@@ -84,7 +84,7 @@ if(I18n.locale == "de_DE"){
     textBtnVE="AM";
     textBtnVEinfo="Get Calls on Alliance Missions";
     textEinsatzleitung="Incident Command";
-    textUnbekannteLage="Situation has not yet been investigated";
+    textUnbekannteLage="Situation has not yet been fully investigated";
 }
 
 const my_user_id=user_id;
