@@ -5,7 +5,6 @@
 // @description  Sortiert die angeklickten Fahrzeuge in dem Einsatzfenster
 // @author       Dynamiite
 // @include      *://www.leitstellenspiel.de/missions*
-// @include      *://www.leitstellenspiel.de/missions*
 // @include      *://www.missionchief.co.uk/missions*
 // @include      *://www.missionchief.com/missions*
 // @grant        none
