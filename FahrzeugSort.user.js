@@ -23,5 +23,5 @@
                 $('#vehicle_element_content_'+$(checked[i])[0].value).prependTo($('#vehicle_show_table_body_all'))
             }
         }
-    },500)
+    },1000)
 })();
