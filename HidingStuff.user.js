@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Hiding
-// @version      1
+// @version      1.0.1
 // @description  Sachen ausblenden
 // @author       Dynamiite
 // @include      *://leitstellenspiel.de/
