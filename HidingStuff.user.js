@@ -165,7 +165,7 @@
                let glyphicon = $(einsatze[i]).find('.glyphicon-asterisk')
                 if($(glyphicon).hasClass('hidden')){
                     $(einsatze[i]).show()
-                    einsatzarray.push($(einsatze[i]).attr('id').split('_')[1])
+                    einsatzarray.push($(einsatze[i]).attr('mission_id'))
                 }
             }
             for (let i = mission_markers.length - 1; i >= 0; i--) {
