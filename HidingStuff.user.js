@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Hiding
-// @version      1.0.2
+// @version      1.0.3
 // @description  Sachen ausblenden
 // @author       Dynamiite
 // @include      *://leitstellenspiel.de/
@@ -162,7 +162,8 @@
         else{
             let einsatzarray=new Array()
             for(let i=0; i<$(einsatze).length;i++){
-                if(!$(einsatze[i]).find('.glyphicon.glyphicon-asterisk:visible').length){
+               let glyphicon = $(einsatze[i]).find('.glyphicon-asterisk')
+                if($(glyphicon).hasClass('hidden')){
                     $(einsatze[i]).show()
                     einsatzarray.push($(einsatze[i]).attr('id').split('_')[1])
                 }
