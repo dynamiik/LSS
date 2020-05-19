@@ -148,7 +148,7 @@
             let einsatzarray=new Array()
             for(let i=0; i<$(einsatze).length;i++){
                 let glyphicon = $(einsatze[i]).find('.glyphicon-asterisk')
-                if($(test).hasClass('hidden')){
+                if($(glyphicon).hasClass('hidden')){
                     $(einsatze[i]).hide()
                     einsatzarray.push($(einsatze[i]).attr('mission_id'))
                 }
