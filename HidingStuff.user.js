@@ -147,14 +147,16 @@
         if(beteiligte_Verbandseinsatze){
             let einsatzarray=new Array()
             for(let i=0; i<$(einsatze).length;i++){
-                if(!$(einsatze[i]).find('.glyphicon.glyphicon-asterisk:visible').length){
+                let glyphicon = $(einsatze[i]).find('.glyphicon-asterisk')
+                if($(test).hasClass('hidden')){
                     $(einsatze[i]).hide()
-                    einsatzarray.push($(einsatze[i]).attr('id').split('_')[1])
+                    einsatzarray.push($(einsatze[i]).attr('mission_id'))
                 }
             }
             for (let i = mission_markers.length - 1; i >= 0; i--) {
-                let string = mission_markers[i].mission_id.toString();
-                if(einsatzarray.some((substring)=>string.includes(substring))) map.removeLayer(mission_markers[i]);
+                let string_ids_out = mission_markers[i].mission_id.toString();
+                if(einsatzarray.some((substring)=>string_ids_out.includes(substring.toString()))) {
+                    map.removeLayer(mission_markers[i]);}
             }
         }
         else{
@@ -166,8 +168,8 @@
                 }
             }
             for (let i = mission_markers.length - 1; i >= 0; i--) {
-                let string = mission_markers[i].mission_id.toString();
-                if(einsatzarray.some((substring)=>string.includes(substring))) map.addLayer(mission_markers[i]);
+                let string_ids_id = mission_markers[i].mission_id.toString();
+                if(einsatzarray.some((substring)=>string_ids_id.includes(substring))){ map.addLayer(mission_markers[i]);}
             }
         }
     }
