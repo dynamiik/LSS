@@ -16,8 +16,10 @@
     var myVehicle = false;
     var myMission = false;
     var myBuilding = false
-    var verbandVehicle = true;
-    var verbandMission = true;
+    var verbandVehicle = false;
+    var verbandMission = false;
+    var beteiligte_Verbandseinsatze=false;
+
     var filter = ['[Verband]', '[Event]']; // Filter für Fahrzeug und Gebäude und Missionen text
     var substringCount = filter.length;
 
@@ -110,6 +112,15 @@
             $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
             return false;
         });        
+        button_class = (beteiligte_Verbandseinsatze) ? "ausgeblendet":"angezeigt";
+        $('<a href="#" title="verbandMission">Beteiligte Verbands Missionen <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_5'))
+            .click(function(e){
+            beteiligte_Verbandseinsatze = !beteiligte_Verbandseinsatze;
+            f_beteiligte_Verbandseinsatze();
+            // Buttontext wechseln
+            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
+            return false;
+        });
         button_class = (statusVehicle) ?  "ausgeblendet":"angezeigt";
         //Fügt Buttons in neue li. onclick toggelt Boolean und ruft function auf
         $('<a href="#"  title="statusVehicle">Freie Fahrzeuge <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_7'))
@@ -128,6 +139,37 @@
         if(verbandMission)f_verbandMission();
         if(verbandVehicle)f_verbandVehicle();
         if(statusVehicle)f_statusVehicle();
+        if(beteiligte_Verbandseinsatze)f_beteiligte_Verbandseinsatze();
+
+    }
+    function f_beteiligte_Verbandseinsatze(){
+        let einsatze = $('#mission_list_alliance .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
+        if(beteiligte_Verbandseinsatze){
+            let einsatzarray=new Array()
+            for(let i=0; i<$(einsatze).length;i++){
+                if(!$(einsatze[i]).find('.glyphicon.glyphicon-asterisk:visible').length){
+                    $(einsatze[i]).hide()
+                    einsatzarray.push($(einsatze[i]).attr('id').split('_')[1])
+                }
+            }
+            for (let i = mission_markers.length - 1; i >= 0; i--) {
+                let string = mission_markers[i].mission_id.toString();
+                if(einsatzarray.some((substring)=>string.includes(substring))) map.removeLayer(mission_markers[i]);
+            }
+        }
+        else{
+            let einsatzarray=new Array()
+            for(let i=0; i<$(einsatze).length;i++){
+                if(!$(einsatze[i]).find('.glyphicon.glyphicon-asterisk:visible').length){
+                    $(einsatze[i]).show()
+                    einsatzarray.push($(einsatze[i]).attr('id').split('_')[1])
+                }
+            }
+            for (let i = mission_markers.length - 1; i >= 0; i--) {
+                let string = mission_markers[i].mission_id.toString();
+                if(einsatzarray.some((substring)=>string.includes(substring))) map.addLayer(mission_markers[i]);
+            }
+        }
     }
     //Blendet die Fahrzeuge aus in der Fahrzeugliste bei status 3 4 6
     function f_statusVehicle(){
