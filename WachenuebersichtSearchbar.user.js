@@ -65,9 +65,11 @@
             // blendet alle Wachen ein die durch Filterbuttons ausgeblendet wurden
             if($(wachen[i]).hasClass('hideBuildingType')||$(wachen[i]).hasClass('hideLeitstelle'))
                 $(wachen[i]).addClass('search_input_field_gebaudeubersicht_show')
-            // blendet "Fahrzeuge ausgeblendet" ein um darin zu suchen
-            if($(wachen[i]).children('.building_list_vehicles:hidden').length)
-                $(wachen[i]).children('.building_list_vehicles').show()
+            // Wenn nach Fahrzeugen gesucht werden soll: blendet "Fahrzeuge ausgeblendet" ein um darin zu suchen 
+            if(!nurWachen){
+                if($(wachen[i]).children('.building_list_vehicles:hidden').length)
+                    $(wachen[i]).children('.building_list_vehicles').show()
+            }
         }
         //suche Wachen
         if(nurWachen){
