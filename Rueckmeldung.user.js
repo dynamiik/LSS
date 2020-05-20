@@ -174,15 +174,15 @@ var einsatzleitungen=new Array();
                 let iconfarbe = icon.split(/_|\./)[1];
                 if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_green')&&auchBeiVollstandigkeit){
                     sendRueckmeldung(_eNummer);
-                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', 'rgba(0, 255, 31, 0.26)')
+                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', FMSgruen)
                 }
                 if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_red')){
                     sendRueckmeldung(_eNummer);
-                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', 'rgba(255, 0, 0, 0.26)')
+                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', FMSrot)
                 }
                 if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_yellow')&&sofortBeiEintreffen){
                     sendRueckmeldung(_eNummer);
-                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', 'rgba(255, 255, 0, 0.4)')
+                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', FMSgelb)
                 }
             }, _wartezeit, eNummer);
         }
