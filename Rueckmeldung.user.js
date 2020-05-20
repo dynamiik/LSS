@@ -33,8 +33,9 @@ var nurFR = false; // Rueckmeldung nur bei eintreffen des ersten Fahrzeugs (true
 var sofortBeiEintreffen=true; //Rueckmeldung obwohl noch Fahrzeuge auf anfahrt sind -> Einsatzsymbol Gelb (true) Rueckmeldung nur wenn keine Fahrzeuge auf anfahrt sind -> Einsatzsymbol rot(false)
 var auchBeiVollstandigkeit=true; //Rueckmeldung auch wenn alle erforderten Fahrzeuge eingetroffen sind -> Einsatzsymbol Gruen(true)
 
-// Language
+const mitFarbe=false; //Farbiger Hintergrund true=eingeschaltet
 
+// Language
 ///////////////ENDE//////////////////////
 var textVerband, textAusbreitung, textASL, textBtnFR, textBtnFRinfo, textBtnAnfahrt, textBtnAnfahrtInfo, textBtnASL, textASLdauer, textBtnASLinfo, textBtnVE, textBtnVEinfo, textEinsatzleitung, textUnbekannteLage;
 if(I18n.locale == "de_DE"){
@@ -171,9 +172,18 @@ var einsatzleitungen=new Array();
                 let klasse = $('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_red')
                 let icon = $('#mission_panel_'+einsatzleitungen[_eNummer][0]+' img').attr('src');
                 let iconfarbe = icon.split(/_|\./)[1];
-                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_green')&&auchBeiVollstandigkeit) sendRueckmeldung(_eNummer);
-                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_red'))sendRueckmeldung(_eNummer);
-                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_yellow')&&sofortBeiEintreffen) sendRueckmeldung(_eNummer);
+                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_green')&&auchBeiVollstandigkeit){
+                    sendRueckmeldung(_eNummer);
+                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', 'rgba(0, 255, 31, 0.26)')
+                }
+                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_red')){
+                    sendRueckmeldung(_eNummer);
+                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', 'rgba(255, 0, 0, 0.26)')
+                }
+                if($('#mission_panel_'+einsatzleitungen[_eNummer][0]).hasClass('mission_panel_yellow')&&sofortBeiEintreffen){
+                    sendRueckmeldung(_eNummer);
+                    if(mitFarbe)$('.radio_message_vehicle_'+einsatzleitungen[_eNummer][1]).css('background-color', 'rgba(255, 255, 0, 0.4)')
+                }
             }, _wartezeit, eNummer);
         }
         return;
