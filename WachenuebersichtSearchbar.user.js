@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wachenübersicht Searchbar
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.2
 // @description  try to take over the world!
 // @author       Dynamiite
 // @include      *://www.leitstellenspiel.de/*
