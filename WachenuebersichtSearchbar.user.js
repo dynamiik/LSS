@@ -23,9 +23,9 @@
     let searchy = $('<input type="text" search_class="missionSideBarEntrySearchable" id="search_input_field_gebaudeubersicht" style="color: #333; width:90%; font-size:12px; border:1px solid #ccc; border-radius:4px;  background-image: url(/images/search_5a5753.svg); background-repeat: no-repeat; background-size: auto 100%; padding-left: 25px;padding-right: 20px;">')
     // Wachentoggle Button
     let button_class = (nurWachen) ? "btn-success" : "btn-danger";
-    let butty = $('<a href="#" class="btn '+button_class+' btn-xs " title="Wachen suche" style="margin-left:5px">W</a>')
+    let butty = $('<a href="#" class="btn '+button_class+' btn-xs " title="Wachen suche" style="position: absolute;">W</a>')
     // Reset button
-    let buttyX = $('<a href="#" class="btn btn-xs" title="clear" style="position:absolute;right:11%;margin-top:1px;height:20px;">x</a>')
+    let buttyX = $('<a href="#" class="btn btn-xs" title="clear" style="position:relative;right:5%;margin-top:1px;height:20px;">x</a>')
     divy.appendTo($('#building_panel_heading'))
     searchy.appendTo($('#search_input_field_gebaudeubersicht_ID'))
     buttyX.appendTo($('#search_input_field_gebaudeubersicht_ID'))
