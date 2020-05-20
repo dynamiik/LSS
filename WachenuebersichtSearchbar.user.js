@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wachenübersicht Searchbar
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
+// @version      1.0.0
 // @description  try to take over the world!
 // @author       Dynamiite
 // @include      *://www.leitstellenspiel.de/*
@@ -49,6 +49,7 @@
         $(wachen).removeClass('search_input_field_gebaudeubersicht_hide')
         $(wachen).removeClass('search_input_field_gebaudeubersicht_show')
         $(fahrzeuge).parent().show()
+        $(searchy).css('background-color', 'white')
         if($(searchy).val()==""){
             //blendet "Fahrzeuge ausgeblendet" wieder aus
             for(let i=0;i<wachen.length;i++){
@@ -65,7 +66,7 @@
             // blendet alle Wachen ein die durch Filterbuttons ausgeblendet wurden
             if($(wachen[i]).hasClass('hideBuildingType')||$(wachen[i]).hasClass('hideLeitstelle'))
                 $(wachen[i]).addClass('search_input_field_gebaudeubersicht_show')
-            // Wenn nach Fahrzeugen gesucht werden soll: blendet "Fahrzeuge ausgeblendet" ein um darin zu suchen 
+            // blendet "Fahrzeuge ausgeblendet" ein um darin zu suchen
             if(!nurWachen){
                 if($(wachen[i]).children('.building_list_vehicles:hidden').length)
                     $(wachen[i]).children('.building_list_vehicles').show()
@@ -75,6 +76,9 @@
         if(nurWachen){
             //Verstecke Wachen wenn text != suchtext
             for(let i=0;i<wachen.length;i++){
+                // Suchfeld farbe Rot wenn nicht alle Fahrzeuge geladen
+                if($(wachen[i]).children('.building_list_vehicles').text() == "Lade...")
+                    $(searchy).css('background-color', '#ffafaf')
                 if($(wachen[i]).find('a.map_position_mover').text().toLowerCase().search($(searchy).val().toLowerCase())==-1){
                     //$(wachen[i]).addClass('hideBuildingType')
                     $(wachen[i]).addClass('search_input_field_gebaudeubersicht_hide')
@@ -92,6 +96,9 @@
             }
             //verstecke Wachen durch class 'search_input_field_gebaudeubersicht_hide' und blende Fahrzeuge wieder ein
             for(let i=0;i<wachen.length;i++){
+                // Suchfeld farbe Rot wenn nicht alle Fahrzeuge geladen
+                if($(wachen[i]).children('.building_list_vehicles').text() == "Lade...")
+                    $(searchy).css('background-color', '#ffafaf')
                 if($(wachen[i]).find('.building_list_vehicle_element:visible').length==0){
                     //$(wachen[i]).addClass('hideBuildingType')
                     $(wachen[i]).addClass('search_input_field_gebaudeubersicht_hide')
