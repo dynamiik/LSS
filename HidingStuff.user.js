@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Hiding
-// @version      1.0.3
+// @version      1.0.4
 // @description  Sachen ausblenden
 // @author       Dynamiite
 // @include      *://leitstellenspiel.de/
 // @include      *://www.leitstellenspiel.de/
-// @grant        none
+// @grant        GM_addStyle
 // @namespace
 // ==/UserScript==
 /* global $ */
@@ -25,6 +25,7 @@
 
     // ruft setIntervall alle 10 sekunden auf
     //var tid = setInterval(check_intervall, 10000);
+    GM_addStyle(`.beteiligte_Verbandseinsatze_hiding{display:none !important;}`);
     init();
     check_intervall();
     // Interval alternatives
@@ -149,7 +150,8 @@
             for(let i=0; i<$(einsatze).length;i++){
                 let glyphicon = $(einsatze[i]).find('.glyphicon-asterisk')
                 if($(glyphicon).hasClass('hidden')){
-                    $(einsatze[i]).hide()
+                    $(einsatze[i]).addClass('beteiligte_Verbandseinsatze_hiding')
+                   // $(einsatze[i]).hide()
                     einsatzarray.push($(einsatze[i]).attr('mission_id'))
                 }
             }
@@ -164,7 +166,8 @@
             for(let i=0; i<$(einsatze).length;i++){
                let glyphicon = $(einsatze[i]).find('.glyphicon-asterisk')
                 if($(glyphicon).hasClass('hidden')){
-                    $(einsatze[i]).show()
+                    $(einsatze[i]).removeClass('beteiligte_Verbandseinsatze_hiding')
+                    //$(einsatze[i]).show()
                     einsatzarray.push($(einsatze[i]).attr('mission_id'))
                 }
             }
