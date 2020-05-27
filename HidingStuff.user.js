@@ -14,10 +14,10 @@
     GM_addStyle(`.beteiligte_Verbandseinsatze_hiding{display:none !important;}`);
 
     /* Configuration */
-    var statusVehicle = false;
     var myVehicle = false;
+    var statusVehicle = false;
     var myMission = false;
-    var myBuilding = true
+    var myBuilding = false;
     var verbandVehicle = true;
     var verbandMission = true;
     var beteiligte_Verbandseinsatze=false;
@@ -128,24 +128,28 @@
     };
     map.on({
         zoomend: function() {
-            f_beteiligte_Verbandseinsatze();
-            if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
-            if(myBuilding)f_myBuilding();
+            setTimeout(()=>{
+                f_beteiligte_Verbandseinsatze();
+                if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
+                if(myBuilding)f_myBuilding();
+            },100)
         },
         moveend: function() {
-            f_beteiligte_Verbandseinsatze();
-            if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
-            if(myBuilding)f_myBuilding();
+            setTimeout(()=>{
+                f_beteiligte_Verbandseinsatze();
+                if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
+                if(myBuilding)f_myBuilding();
+            },100)
         }
     });
-/*
+    /*
     let vehicleCreateOnMapBuffer = vehicleCreateOnMap;
     vehicleCreateOnMap = function(e){
         f_statusVehicle();
         vehicleCreateOnMapBuffer(e)
     };
 */
-/*
+    /*
     let vehicleDriveAddBuffer = vehicleDriveAdd;
     vehicleDriveAdd = function(e){
         f_statusVehicle();
