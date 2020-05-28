@@ -190,8 +190,10 @@
                 map.removeLayer(vehicle_markers[i]);
             else if(statusVehicle && einsatzarray_vehicle.some((substring)=>string_ids_out.includes(substring.toString())))
                 map.removeLayer(vehicle_markers[i]);
-            else
-                map.addLayer(vehicle_markers[i]);
+            else{
+                if(!vehicle_markers[i].vehicle_marker_deleted)
+                    map.addLayer(vehicle_markers[i]);
+            }
         }
     }
     function mission_hide(){
