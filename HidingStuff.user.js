@@ -233,7 +233,7 @@
         let einsatze = $('#mission_list_alliance .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
         einsatze = $(einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
         let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
-        geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&$(t).find('.panel-heading').text().includes('Verband'))
+        geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&$(t).find('.panel-heading').text().includes('[Verband]'))
         let einsatzarray=new Array()
         if(beteiligte_Verbandseinsatze){
             $(einsatze).map((e,t)=>{
@@ -248,6 +248,7 @@
         }
         else{
             $(einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbandseinsatze_hiding'))
+            $(geplante_einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbandseinsatze_hiding'))
         }
         mission_hide()
     }
@@ -257,7 +258,7 @@
         einsatze = $(einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
         let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
         //geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
-        geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&!$(t).find('.panel-heading').text().includes('Verband'))
+        geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&!$(t).find('.panel-heading').text().includes('[Verband]'))
         let einsatzarray=new Array()
         if(beteiligte_eigeneeinsatze){
             $(einsatze).map((e,t)=>{
@@ -272,6 +273,7 @@
         }
         else{
             $(einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbandseinsatze_hiding'))
+            $(geplante_einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbandseinsatze_hiding'))
         }
         mission_hide()
     }
