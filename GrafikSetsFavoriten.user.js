@@ -12,7 +12,7 @@
     'use strict';
     // ["URL vom Grafikset anwenden Button", "Beliebiger name der im Spiel angezeigt werden soll"]
     let graphicsets_urls = [
-        ["https://www.leitstellenspiel.de/profile/mission_graphic/1", "Durchschnittliche Credits Icon"],
+        ["https://www.leitstellenspiel.de/profile/mission_graphic/1", "HardyAkaReaper - 39 x 35"],
         ["https://www.leitstellenspiel.de/profile/vehicle_graphic/818", "Fahrzeuge von firehero92"]
     ];
     let graphicsets_button = $('ul.dropdown-menu > li .lightbox-open').filter((e,t)=>$(t).text().includes("Grafikset"))
