@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Hiding
-// @version      1.0.6
+// @version      1.0.7
 // @description  Sachen ausblenden
 // @author       Dynamiite
 // @include      *://leitstellenspiel.de/
+// @include      *://leitstellenspiel.de/?mapview=true
 // @include      *://www.leitstellenspiel.de/
 // @grant        GM_addStyle
 // @namespace
