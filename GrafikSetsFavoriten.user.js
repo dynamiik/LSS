@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Graphicsets
 // @namespace    http://tampermonkey.net/
-// @version      0.0.1
-// @description  try to take over the world!
+// @version      1.0.1
+// @description  Fügt Grafiksetfavs hinzu
 // @author       Dynamiite
 // @match        https://www.leitstellenspiel.de/
 // @match        https://www.missionchief.co.uk/
