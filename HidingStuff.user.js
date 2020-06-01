@@ -1,11 +1,17 @@
 // ==UserScript==
 // @name         Hiding
-// @version      1.0.8
+// @version      1.0.9
 // @description  Sachen ausblenden
 // @author       Dynamiite
 // @include      *://leitstellenspiel.de/
 // @include      *://leitstellenspiel.de/?mapview=true
 // @include      *://www.leitstellenspiel.de/
+// @include      *://.missionchief.co.uk/
+// @include      *://www.missionchief.co.uk/
+// @include      *://missionchief.co.uk/?mapview=true
+// @include      *://.missionchief.com/
+// @include      *://www.missionchief.com/
+// @include      *://missionchief.com/?mapview=true
 // @grant        GM_addStyle
 // @namespace
 // ==/UserScript==
@@ -27,7 +33,7 @@
     var beteiligte_Verbands_missionen = false;
     /* END Configuration */
 
-    var filter = ['[Verband]', '[Event]']; // Filter für Fahrzeug und Gebäude und Missionen text
+    var filter = ['[Verband]', '[Event]','[Alliance]']; // Filter für Fahrzeug und Gebäude und Missionen text
     var substringCount = filter.length;
     var missions_outer_height = 0;
     // ruft setIntervall alle 10 sekunden auf
@@ -111,8 +117,8 @@
             if(beteiligte_eigene_einsatze){
                 alle_eigene_missionen=false;
                 //beteiligte_eigene_einsatze=false
-                freigegebene_eigene_einsatze=false
-                nicht_freigegebene_eigene_einsatze=false
+                //freigegebene_eigene_einsatze=false
+                //nicht_freigegebene_eigene_einsatze=false
             }
             refreshthehidingbuttons()
             f_beteiligte_eigene_einsatze();
@@ -124,7 +130,7 @@
             freigegebene_eigene_einsatze = !freigegebene_eigene_einsatze;
             if(freigegebene_eigene_einsatze){
                 alle_eigene_missionen=false;
-                beteiligte_eigene_einsatze=false
+                //beteiligte_eigene_einsatze=false
                 //freigegebene_eigene_einsatze=false
                 nicht_freigegebene_eigene_einsatze=false
             }
@@ -138,7 +144,7 @@
             nicht_freigegebene_eigene_einsatze = !nicht_freigegebene_eigene_einsatze;
             if(nicht_freigegebene_eigene_einsatze){
                 alle_eigene_missionen=false;
-                beteiligte_eigene_einsatze=false
+                //beteiligte_eigene_einsatze=false
                 freigegebene_eigene_einsatze=false
                 //nicht_freigegebene_eigene_einsatze=false
             }
@@ -296,7 +302,7 @@
         let einsatze = $('#mission_list_alliance .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
         einsatze = $(einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
         let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
-        geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&$(t).find('.panel-heading').text().includes('[Verband]'))
+        geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&($(t).find('.panel-heading').text().includes('[Verband]')||$(t).find('.panel-heading').text().includes('[Alliance]')))
         let einsatzarray=new Array()
         if(beteiligte_Verbands_missionen){
             $(einsatze).map((e,t)=>{
@@ -318,7 +324,7 @@
     function f_freigegebene_eigene_einsatze(){
         einsatzarray_freigegebene_eigene_mission=new Array()
         let einsatze = $('#mission_list .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>$(t).children().hasClass('panel-success'))
-        let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>$(t).children().hasClass('panel-success')&&!$(t).find('.panel-heading').text().includes('[Verband]'))
+        let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>$(t).children().hasClass('panel-success')&&!($(t).find('.panel-heading').text().includes('[Verband]')||$(t).find('.panel-heading').text().includes('[Alliance]')))
         if(freigegebene_eigene_einsatze){
             einsatze.map((e,t)=>{
                 einsatzarray_freigegebene_eigene_mission.push($(t).attr('mission_id'));
@@ -337,7 +343,7 @@
     function f_nicht_freigegebene_eigene_einsatze(){
         einsatzarray_nicht_freigegebene_eigene_mission=new Array()
         let einsatze = $('#mission_list .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>!$(t).children().hasClass('panel-success'))
-        let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>$(t).children().hasClass('panel-success')&&!$(t).find('.panel-heading').text().includes('[Verband]'))
+        let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>$(t).children().hasClass('panel-success')&&!($(t).find('.panel-heading').text().includes('[Verband]')||$(t).find('.panel-heading').text().includes('[Alliance]')))
         if(nicht_freigegebene_eigene_einsatze){
             einsatze.map((e,t)=>{
                 einsatzarray_nicht_freigegebene_eigene_mission.push($(t).attr('mission_id'));
@@ -359,7 +365,7 @@
         einsatze = $(einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
         let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
         //geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
-        geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&!$(t).find('.panel-heading').text().includes('[Verband]'))
+        geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&!($(t).find('.panel-heading').text().includes('[Verband]')||$(t).find('.panel-heading').text().includes('[Alliance]')))
         let einsatzarray=new Array()
         if(beteiligte_eigene_einsatze){
             $(einsatze).map((e,t)=>{
