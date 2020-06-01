@@ -125,8 +125,8 @@
             }
             refreshthehidingbuttons()
             f_beteiligte_eigene_einsatze();
-            f_freigegebene_eigene_einsatze();
-            f_nicht_freigegebene_eigene_einsatze();
+            if(freigegebene_eigene_einsatze)f_freigegebene_eigene_einsatze();
+            if(nicht_freigegebene_eigene_einsatze)f_nicht_freigegebene_eigene_einsatze();
             return false;
         });
         button_class = (freigegebene_eigene_einsatze) ? "-":"+";
@@ -141,7 +141,7 @@
             }
             refreshthehidingbuttons()
             f_freigegebene_eigene_einsatze();
-            f_beteiligte_Verbands_missionen();
+            if(beteiligte_eigene_einsatze)f_beteiligte_eigene_einsatze();
             return false;
         });
         button_class = (nicht_freigegebene_eigene_einsatze) ? "-":"+";
@@ -156,7 +156,7 @@
             }
             refreshthehidingbuttons()
             f_nicht_freigegebene_eigene_einsatze();
-            f_beteiligte_Verbands_missionen();
+            if(beteiligte_eigene_einsatze)f_beteiligte_eigene_einsatze();
             return false;
         });
         button_class = (verbands_fahrzeuge) ? "-":"+";
@@ -414,7 +414,7 @@
             })
             //let n_einsatzarray = $('#mission_list_sicherheitswache > .missionSideBarEntry').map((e,t)=>einsatzarray_beteiligte_eigene_mission.push($(t).attr('mission_id')));
         }
-        else{
+        else if(!nicht_freigegebene_eigene_einsatze&&!freigegebene_eigene_einsatze){
             $(einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
             $(geplante_einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
         }
