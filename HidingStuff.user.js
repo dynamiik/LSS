@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Hiding
-// @version      1.0.7
+// @version      1.0.8
 // @description  Sachen ausblenden
 // @author       Dynamiite
 // @include      *://leitstellenspiel.de/
@@ -12,17 +12,19 @@
 /* global $ */
 (function() {
     'use strict';
-    GM_addStyle(`.beteiligte_Verbandseinsatze_hiding{display:none !important;}`);
+    GM_addStyle(`.beteiligte_Verbands_missionen_hiding{display:none !important;}`);
 
     /* Configuration */
-    var myVehicle = false;
-    var statusVehicle = false;
-    var myMission = false;
-    var beteiligte_eigeneeinsatze = false;
-    var myBuilding = false;
-    var verbandVehicle = true;
-    var verbandMission = true;
-    var beteiligte_Verbandseinsatze=false;
+    var eigene_gebaude = false;
+    var alle_eigene_fahrzeuge = false;
+    var fahrzeuge_im_einsatz = false;
+    var alle_eigene_missionen = false;
+    var beteiligte_eigene_einsatze = false;
+    var freigegebene_eigene_einsatze = false;
+    var nicht_freigegebene_eigene_einsatze = false;
+    var verbands_fahrzeuge = true;
+    var alle_verbands_missionen = true;
+    var beteiligte_Verbands_missionen = false;
     /* END Configuration */
 
     var filter = ['[Verband]', '[Event]']; // Filter für Fahrzeug und Gebäude und Missionen text
@@ -33,179 +35,235 @@
     let einsatzarray_vehicle=new Array()
     let einsatzarray_beteiligte_mission=new Array()
     let einsatzarray_beteiligte_eigene_mission=new Array()
+    let einsatzarray_freigegebene_eigene_mission=new Array()
+    let einsatzarray_nicht_freigegebene_eigene_mission=new Array()
     init();
     check_intervall();
     function init(){ // https://www.leitstellenspiel.de/images/search_5a5753.svg
         $('.nav.navbar-nav.navbar-right').prepend('<li class="dropdown" id="dropdown_hiding_settings"><a href="#" id="hide" role="button" class="dropdown-toggle" data-toggle="dropdown"><img alt="Hide_ffffff" class="navbar-icon" src="https://www.leitstellenspiel.de/images/search_5a5753.svg" title="Hide"><span class="visible-xs">Hide</span><b class="caret"></b></a></li>');
         $('<ul class="dropdown-menu" role="menu" aria-labelledby="news"><li id="dropdown_hiding_settings_1" role="presentation"></li></ul>').appendTo('#dropdown_hiding_settings');
-        $('<li id="dropdown_hiding_settings_2"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
+        $('<hr style="margin:0px"><li id="dropdown_hiding_settings_2"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
         $('<li id="dropdown_hiding_settings_3"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
-        $('<li id="dropdown_hiding_settings_4"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
+        $('<hr style="margin:0px"><li id="dropdown_hiding_settings_4"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
         $('<li id="dropdown_hiding_settings_5"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
         $('<li id="dropdown_hiding_settings_6"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
         $('<li id="dropdown_hiding_settings_7"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
-        $('<li id="dropdown_hiding_settings_8"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
+        $('<hr style="margin:0px"><li id="dropdown_hiding_settings_8"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
+        $('<hr style="margin:0px"><li id="dropdown_hiding_settings_9"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
+        $('<li id="dropdown_hiding_settings_10"></li>').appendTo('#dropdown_hiding_settings .dropdown-menu');
 
-        let button_class = (myVehicle) ? "ausgeblendet":"angezeigt";
+         let button_class = (eigene_gebaude) ? "-":"+";
         //Fügt Buttons in neue li. onclick toggelt Boolean und ruft function auf
-        $('<a href="#" title="myVehicle">Eigene Fahrzeuge <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_1'))
+        $('<a href="#" title="eigene_gebaude" id="hiding_eigene_gebaude"><span>'+button_class+'</span> Eigene Gebäude </a>').appendTo($('#dropdown_hiding_settings_1'))
             .click(function(e){
-            myVehicle = !myVehicle;
-            fahrzeuge_hide();
-            // Buttontext wechseln
-            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
+            eigene_gebaude = !eigene_gebaude;
+            f_eigene_gebaude();
+            refreshthehidingbuttons()
             return false;
         });
-        button_class = (statusVehicle) ?  "ausgeblendet":"angezeigt";
+        button_class = (alle_eigene_fahrzeuge) ? "-":"+";
         //Fügt Buttons in neue li. onclick toggelt Boolean und ruft function auf
-        $('<a href="#"  title="statusVehicle">Fahrzeuge im Einsatz <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_2'))
+        $('<a href="#" title="alle_eigene_fahrzeuge" id="hiding_alle_eigene_fahrzeuge"><span>'+button_class+'</span> Alle eigene Fahrzeuge </a>').appendTo($('#dropdown_hiding_settings_2'))
             .click(function(e){
-            statusVehicle = !statusVehicle;
-            f_statusVehicle();
-            if(!statusVehicle){
+            alle_eigene_fahrzeuge = !alle_eigene_fahrzeuge;
+            if(alle_eigene_fahrzeuge)
+                fahrzeuge_im_einsatz=false
+            refreshthehidingbuttons()
+            fahrzeuge_hide();
+            return false;
+        });
+        button_class = (fahrzeuge_im_einsatz) ?  "-":"+";
+        //Fügt Buttons in neue li. onclick toggelt Boolean und ruft function auf
+        $('<a href="#"  title="fahrzeuge_im_einsatz" id="hiding_fahrzeuge_im_einsatz"><span>'+button_class+'</span> Fahrzeuge im Einsatz </a>').appendTo($('#dropdown_hiding_settings_3'))
+            .click(function(e){
+            fahrzeuge_im_einsatz = !fahrzeuge_im_einsatz;
+            if(fahrzeuge_im_einsatz)
+                alle_eigene_fahrzeuge = false
+            refreshthehidingbuttons()
+            f_fahrzeuge_im_einsatz();
+            if(!fahrzeuge_im_einsatz){
                 let wachen = $('.building_list_li')
                 let fahrzeuge=$('.label.label-default.vehicle_building_list_button.lightbox-open')
                 $(wachen).removeClass('hideBuildingType')
                 $(fahrzeuge).parent().show()
             }
-            // Buttontext wechseln
-            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
             return false;
         });
-        button_class = (myMission) ? "ausgeblendet":"angezeigt";
+        button_class = (alle_eigene_missionen) ? "-":"+";
         //Fügt Buttons in neue li. onclick toggelt Boolean und ruft function auf
-        $('<a href="#" title="myVehicle">Eigene Missionen <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_3'))
+        $('<a href="#" title="alle_eigene_missionen" id="hiding_alle_eigene_missionen"><span>'+button_class+'</span> Alle eigene Missionen </a>').appendTo($('#dropdown_hiding_settings_4'))
             .click(function(e){
-            myMission = !myMission;
+            alle_eigene_missionen = !alle_eigene_missionen;
+            if(alle_eigene_missionen){
+                // alle_eigene_missionen=false;
+                beteiligte_eigene_einsatze=false
+                freigegebene_eigene_einsatze=false
+                nicht_freigegebene_eigene_einsatze=false
+            }
+            refreshthehidingbuttons()
             mission_hide();
-            // Buttontext wechseln
-            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
             return false;
         });
-        button_class = (beteiligte_eigeneeinsatze) ? "ausgeblendet":"angezeigt";
-        $('<a href="#" title="verbandMission">Beteiligte eigene Missionen <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_4'))
+        button_class = (beteiligte_eigene_einsatze) ? "-":"+";
+        $('<a href="#" title="beteiligte_eigene_einsatze" id="hiding_beteiligte_eigene_einsatze"> <span>'+button_class+'</span> Beteiligte eigene Missionen</a>').appendTo($('#dropdown_hiding_settings_5'))
             .click(function(e){
-            beteiligte_eigeneeinsatze = !beteiligte_eigeneeinsatze;
-            f_beteiligte_Eigeneeinsatze();
-            // Buttontext wechseln
-            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
+            beteiligte_eigene_einsatze = !beteiligte_eigene_einsatze;
+            if(beteiligte_eigene_einsatze){
+                alle_eigene_missionen=false;
+                //beteiligte_eigene_einsatze=false
+                freigegebene_eigene_einsatze=false
+                nicht_freigegebene_eigene_einsatze=false
+            }
+            refreshthehidingbuttons()
+            f_beteiligte_eigene_einsatze();
             return false;
         });
-        button_class = (myBuilding) ? "ausgeblendet":"angezeigt";
+        button_class = (freigegebene_eigene_einsatze) ? "-":"+";
+        $('<a href="#" title="freigegebene_eigene_einsatze" id="hiding_freigegebene_eigene_einsatze"> <span>'+button_class+'</span> Freigegebene eigene Missionen</a>').appendTo($('#dropdown_hiding_settings_6'))
+            .click(function(e){
+            freigegebene_eigene_einsatze = !freigegebene_eigene_einsatze;
+            if(freigegebene_eigene_einsatze){
+                alle_eigene_missionen=false;
+                beteiligte_eigene_einsatze=false
+                //freigegebene_eigene_einsatze=false
+                nicht_freigegebene_eigene_einsatze=false
+            }
+            refreshthehidingbuttons()
+            f_freigegebene_eigene_einsatze();
+            return false;
+        });
+        button_class = (nicht_freigegebene_eigene_einsatze) ? "-":"+";
+        $('<a href="#" title="nicht_freigegebene_eigene_einsatze" id="hiding_nicht_freigegebene_eigene_einsatze"><span>'+button_class+'</span> Nicht freigegebene eigene Missionen </a>').appendTo($('#dropdown_hiding_settings_7'))
+            .click(function(e){
+            nicht_freigegebene_eigene_einsatze = !nicht_freigegebene_eigene_einsatze;
+            if(nicht_freigegebene_eigene_einsatze){
+                alle_eigene_missionen=false;
+                beteiligte_eigene_einsatze=false
+                freigegebene_eigene_einsatze=false
+                //nicht_freigegebene_eigene_einsatze=false
+            }
+            refreshthehidingbuttons()
+            f_nicht_freigegebene_eigene_einsatze();
+            return false;
+        });
+        button_class = (verbands_fahrzeuge) ? "-":"+";
         //Fügt Buttons in neue li. onclick toggelt Boolean und ruft function auf
-        $('<a href="#" title="myBuilding">Eigene Gebäude <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_5'))
+        $('<a href="#" title="verbands_fahrzeuge" id="hiding_verbands_fahrzeuge"><span>'+button_class+'</span> Verbands Fahrzeuge </a>').appendTo($('#dropdown_hiding_settings_8'))
             .click(function(e){
-            myBuilding = !myBuilding;
-            f_myBuilding();
-            // Buttontext wechseln
-            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
-            return false;
-        });
-        button_class = (verbandVehicle) ? "ausgeblendet":"angezeigt";
-        //Fügt Buttons in neue li. onclick toggelt Boolean und ruft function auf
-        $('<a href="#" title="verbandVehicle">Verband Fahrzeuge <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_6'))
-            .click(function(e){
-            verbandVehicle = !verbandVehicle;
+            verbands_fahrzeuge = !verbands_fahrzeuge;
             fahrzeuge_hide();
-            // Buttontext wechseln
-            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
+            refreshthehidingbuttons()
             return false;
         });
-        button_class = (verbandMission) ? "ausgeblendet":"angezeigt";
+        button_class = (alle_verbands_missionen) ? "-":"+";
         //Fügt Buttons in neue li. onclick toggelt Boolean und ruft function auf
-        $('<a href="#" title="verbandMission">Verbands Missionen <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_7'))
+        $('<a href="#" title="alle_verbands_missionen" id="hiding_alle_verbands_missionen"><span>'+button_class+'</span> Alle Verbands Missionen </a>').appendTo($('#dropdown_hiding_settings_9'))
             .click(function(e){
-            verbandMission = !verbandMission;
+            alle_verbands_missionen = !alle_verbands_missionen;
+            if(alle_verbands_missionen)
+                beteiligte_Verbands_missionen=false
+            refreshthehidingbuttons()
             mission_hide();
-            // Buttontext wechseln
-            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
             return false;
         });
-        button_class = (beteiligte_Verbandseinsatze) ? "ausgeblendet":"angezeigt";
-        $('<a href="#" title="verbandMission">Beteiligte Verbands Missionen <span>'+button_class+'</span></a>').appendTo($('#dropdown_hiding_settings_8'))
+        button_class = (beteiligte_Verbands_missionen) ? "-":"+";
+        $('<a href="#" title="beteiligte_Verbands_missionen" id="hiding_beteiligte_Verbands_missionen"><span>'+button_class+'</span> Beteiligte Verbands Missionen </a>').appendTo($('#dropdown_hiding_settings_10'))
             .click(function(e){
-            beteiligte_Verbandseinsatze = !beteiligte_Verbandseinsatze;
-            f_beteiligte_Verbandseinsatze();
-            // Buttontext wechseln
-            $(this).find('span').text() == "angezeigt" ?  $(this).find('span').text("ausgeblendet"):$(this).find('span').text("angezeigt");
+            beteiligte_Verbands_missionen = !beteiligte_Verbands_missionen;
+            if(beteiligte_Verbands_missionen)
+                alle_verbands_missionen=false
+            refreshthehidingbuttons()
+            f_beteiligte_Verbands_missionen();
             return false;
         });
     }
 
     let missionMarkerOrig = missionMarkerAdd;
     missionMarkerAdd = (e) => {
-        f_beteiligte_Verbandseinsatze();
-        f_beteiligte_Eigeneeinsatze();
-        if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
+        f_beteiligte_Verbands_missionen();
+        f_beteiligte_eigene_einsatze();
+        if(alle_eigene_fahrzeuge||verbands_fahrzeuge||fahrzeuge_im_einsatz)fahrzeuge_hide();
         missionMarkerOrig(e);
     };
     map.on({
         zoomend: function() {
             setTimeout(()=>{
-                f_beteiligte_Verbandseinsatze();
-                f_beteiligte_Eigeneeinsatze();
-                if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
-                if(myBuilding)f_myBuilding();
+                f_beteiligte_Verbands_missionen();
+                f_beteiligte_eigene_einsatze();
+                if(alle_eigene_fahrzeuge||verbands_fahrzeuge||fahrzeuge_im_einsatz)fahrzeuge_hide();
+                if(eigene_gebaude)f_eigene_gebaude();
             },100)
         },
         moveend: function() {
             setTimeout(()=>{
-                f_beteiligte_Verbandseinsatze();
-                f_beteiligte_Eigeneeinsatze();
-                if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
-                if(myBuilding)f_myBuilding();
+                f_beteiligte_Verbands_missionen();
+                f_beteiligte_eigene_einsatze();
+                if(alle_eigene_fahrzeuge||verbands_fahrzeuge||fahrzeuge_im_einsatz)fahrzeuge_hide();
+                if(eigene_gebaude)f_eigene_gebaude();
             },100)
         }
     });
     /*
     let vehicleCreateOnMapBuffer = vehicleCreateOnMap;
     vehicleCreateOnMap = function(e){
-        f_statusVehicle();
+        f_fahrzeuge_im_einsatz();
         vehicleCreateOnMapBuffer(e)
     };
 */
     /*
     let vehicleDriveAddBuffer = vehicleDriveAdd;
     vehicleDriveAdd = function(e){
-        f_statusVehicle();
+        f_fahrzeuge_im_einsatz();
         vehicleDriveAddBuffer(e)
     };
 */
     let vehicleDriveBuffer = vehicleDrive;
     vehicleDrive = function(e){
         vehicleDriveBuffer(e)
-        if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
+        if(alle_eigene_fahrzeuge||verbands_fahrzeuge||fahrzeuge_im_einsatz)fahrzeuge_hide();
     };
     let vehicleMarkerAddBuffer = vehicleMarkerAdd;
     vehicleMarkerAdd = function(e){
         vehicleMarkerAddBuffer(e)
-        if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
+        if(alle_eigene_fahrzeuge||verbands_fahrzeuge||fahrzeuge_im_einsatz)fahrzeuge_hide();
     };
     let radioMessageBuffer = radioMessage;
     radioMessage = function(t){
-        //if(myVehicle||verbandVehicle||statusVehicle)fahrzeuge_hide();
-        f_beteiligte_Verbandseinsatze();
-        f_beteiligte_Eigeneeinsatze();
-        f_statusVehicle();
+        //if(alle_eigene_fahrzeuge||verbands_fahrzeuge||fahrzeuge_im_einsatz)fahrzeuge_hide();
+        f_beteiligte_Verbands_missionen();
+        f_beteiligte_eigene_einsatze();
+        f_fahrzeuge_im_einsatz();
         radioMessageBuffer(t);
+    }
+    function refreshthehidingbuttons(){
+        alle_eigene_fahrzeuge ? $('#hiding_alle_eigene_fahrzeuge').find('span').text("-"): $('#hiding_alle_eigene_fahrzeuge').find('span').text("+");
+        fahrzeuge_im_einsatz ? $('#hiding_fahrzeuge_im_einsatz').find('span').text("-"): $('#hiding_fahrzeuge_im_einsatz').find('span').text("+");
+        alle_eigene_missionen ? $('#hiding_alle_eigene_missionen').find('span').text("-"): $('#hiding_alle_eigene_missionen').find('span').text("+");
+        beteiligte_eigene_einsatze ? $('#hiding_beteiligte_eigene_einsatze').find('span').text("-"): $('#hiding_beteiligte_eigene_einsatze').find('span').text("+");
+        freigegebene_eigene_einsatze ? $('#hiding_freigegebene_eigene_einsatze').find('span').text("-"): $('#hiding_freigegebene_eigene_einsatze').find('span').text("+");
+        nicht_freigegebene_eigene_einsatze ? $('#hiding_nicht_freigegebene_eigene_einsatze').find('span').text("-"): $('#hiding_nicht_freigegebene_eigene_einsatze').find('span').text("+");
+        eigene_gebaude ? $('#hiding_eigene_gebaude').find('span').text("-"): $('#hiding_eigene_gebaude').find('span').text("+");
+        verbands_fahrzeuge ? $('#hiding_verbands_fahrzeuge').find('span').text("-"): $('#hiding_verbands_fahrzeuge').find('span').text("+");
+        alle_verbands_missionen ? $('#hiding_alle_verbands_missionen').find('span').text("-"): $('#hiding_alle_verbands_missionen').find('span').text("+");
+        beteiligte_Verbands_missionen ? $('#hiding_beteiligte_Verbands_missionen').find('span').text("-"): $('#hiding_beteiligte_Verbands_missionen').find('span').text("+");
     }
     function check_intervall() {
         // wird alle 10 sekunden aufgerufen um alles auszublenden was durch die buttons gesetzt wurde
-        //f_statusVehicle();
-        f_beteiligte_Verbandseinsatze();
-        f_beteiligte_Eigeneeinsatze();
-        f_statusVehicle();
-        if(myBuilding)f_myBuilding();
+        //f_fahrzeuge_im_einsatz();
+        f_beteiligte_Verbands_missionen();
+        f_beteiligte_eigene_einsatze();
+        f_fahrzeuge_im_einsatz();
+        if(eigene_gebaude)f_eigene_gebaude();
     }
     function fahrzeuge_hide(){
         for (let i = vehicle_markers.length - 1; i >= 0; i--) {
             let string = vehicle_markers[i]._tooltip._content;
             let string_ids_out = vehicle_markers[i].vehicle_id.toString();
-            if (myVehicle&&!filter.some(substring => string.includes(substring)))
+            if (alle_eigene_fahrzeuge&&!filter.some(substring => string.includes(substring)))
                 map.removeLayer(vehicle_markers[i])
-            else if (verbandVehicle && filter.some(substring => string.includes(substring)))
+            else if (verbands_fahrzeuge && filter.some(substring => string.includes(substring)))
                 map.removeLayer(vehicle_markers[i]);
-            else if(statusVehicle && einsatzarray_vehicle.some((substring)=>string_ids_out.includes(substring.toString())))
+            else if(fahrzeuge_im_einsatz && einsatzarray_vehicle.some((substring)=>string_ids_out.includes(substring.toString())))
                 map.removeLayer(vehicle_markers[i]);
             else{
                 if(!vehicle_markers[i].vehicle_marker_deleted)
@@ -217,43 +275,85 @@
         for (let i = mission_markers.length - 1; i >= 0; i--) {
             let string = mission_markers[i]._tooltip._content;
             let string_ids_id = mission_markers[i].mission_id.toString();
-            if (myMission && !filter.some(substring => string.includes(substring)))
+            if (alle_eigene_missionen && !filter.some(substring => string.includes(substring)))
                 map.removeLayer(mission_markers[i]);
-            else if (verbandMission && filter.some(substring => string.includes(substring)))
+            else if(freigegebene_eigene_einsatze && einsatzarray_freigegebene_eigene_mission.some((substring)=>string_ids_id.includes(substring)))
                 map.removeLayer(mission_markers[i]);
-            else if(beteiligte_Verbandseinsatze && einsatzarray_beteiligte_mission.some((substring)=>string_ids_id.includes(substring)))
+            else if(nicht_freigegebene_eigene_einsatze && einsatzarray_nicht_freigegebene_eigene_mission.some((substring)=>string_ids_id.includes(substring)))
                 map.removeLayer(mission_markers[i]);
-            else if(beteiligte_eigeneeinsatze && einsatzarray_beteiligte_eigene_mission.some((substring)=>string_ids_id.includes(substring)))
+            else if (alle_verbands_missionen && filter.some(substring => string.includes(substring)))
+                map.removeLayer(mission_markers[i]);
+            else if(beteiligte_Verbands_missionen && einsatzarray_beteiligte_mission.some((substring)=>string_ids_id.includes(substring)))
+                map.removeLayer(mission_markers[i]);
+            else if(beteiligte_eigene_einsatze && einsatzarray_beteiligte_eigene_mission.some((substring)=>string_ids_id.includes(substring)))
                 map.removeLayer(mission_markers[i]);
             else
                 map.addLayer(mission_markers[i]);
         }
     }
-    function f_beteiligte_Verbandseinsatze(){
+    function f_beteiligte_Verbands_missionen(){
         einsatzarray_beteiligte_mission=new Array()
         let einsatze = $('#mission_list_alliance .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
         einsatze = $(einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
         let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
         geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&$(t).find('.panel-heading').text().includes('[Verband]'))
         let einsatzarray=new Array()
-        if(beteiligte_Verbandseinsatze){
+        if(beteiligte_Verbands_missionen){
             $(einsatze).map((e,t)=>{
                 einsatzarray_beteiligte_mission.push($(t).attr('mission_id'));
-                $(t).addClass('beteiligte_Verbandseinsatze_hiding');
+                $(t).addClass('beteiligte_Verbands_missionen_hiding');
             })
             $(geplante_einsatze).map((e,t)=>{
                 einsatzarray_beteiligte_mission.push($(t).attr('mission_id'));
-                $(t).addClass('beteiligte_Verbandseinsatze_hiding');
+                $(t).addClass('beteiligte_Verbands_missionen_hiding');
             })
             //let n_einsatzarray = $('#mission_list_sicherheitswache > .missionSideBarEntry').map((e,t)=>einsatzarray_beteiligte_mission.push($(t).attr('mission_id')));
         }
         else{
-            $(einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbandseinsatze_hiding'))
-            $(geplante_einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbandseinsatze_hiding'))
+            $(einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
+            $(geplante_einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
         }
         mission_hide()
     }
-    function f_beteiligte_Eigeneeinsatze(){
+    function f_freigegebene_eigene_einsatze(){
+        einsatzarray_freigegebene_eigene_mission=new Array()
+        let einsatze = $('#mission_list .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>$(t).children().hasClass('panel-success'))
+        let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>$(t).children().hasClass('panel-success')&&!$(t).find('.panel-heading').text().includes('[Verband]'))
+        if(freigegebene_eigene_einsatze){
+            einsatze.map((e,t)=>{
+                einsatzarray_freigegebene_eigene_mission.push($(t).attr('mission_id'));
+                $(t).addClass('beteiligte_Verbands_missionen_hiding');
+            })
+            geplante_einsatze.map((e,t)=>{
+                einsatzarray_freigegebene_eigene_mission.push($(t).attr('mission_id'));
+                $(t).addClass('beteiligte_Verbands_missionen_hiding');
+            })
+        }else{
+            einsatze.map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
+            geplante_einsatze.map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
+        }
+        mission_hide()
+    }
+    function f_nicht_freigegebene_eigene_einsatze(){
+        einsatzarray_nicht_freigegebene_eigene_mission=new Array()
+        let einsatze = $('#mission_list .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>!$(t).children().hasClass('panel-success'))
+        let geplante_einsatze = $('#mission_list_sicherheitswache .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted').filter((e,t)=>$(t).children().hasClass('panel-success')&&!$(t).find('.panel-heading').text().includes('[Verband]'))
+        if(nicht_freigegebene_eigene_einsatze){
+            einsatze.map((e,t)=>{
+                einsatzarray_nicht_freigegebene_eigene_mission.push($(t).attr('mission_id'));
+                $(t).addClass('beteiligte_Verbands_missionen_hiding');
+            })
+            geplante_einsatze.map((e,t)=>{
+                einsatzarray_nicht_freigegebene_eigene_mission.push($(t).attr('mission_id'));
+                $(t).addClass('beteiligte_Verbands_missionen_hiding');
+            })
+        }else{
+            einsatze.map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
+            geplante_einsatze.map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
+        }
+        mission_hide()
+    }
+    function f_beteiligte_eigene_einsatze(){
         einsatzarray_beteiligte_eigene_mission=new Array()
         let einsatze = $('#mission_list .missionSideBarEntry.missionSideBarEntrySearchable').not('.mission_deleted')
         einsatze = $(einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
@@ -261,26 +361,26 @@
         //geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden'))
         geplante_einsatze = $(geplante_einsatze).filter((e,t)=>$(t).find('.glyphicon-asterisk').hasClass('hidden')&&!$(t).find('.panel-heading').text().includes('[Verband]'))
         let einsatzarray=new Array()
-        if(beteiligte_eigeneeinsatze){
+        if(beteiligte_eigene_einsatze){
             $(einsatze).map((e,t)=>{
                 einsatzarray_beteiligte_eigene_mission.push($(t).attr('mission_id'));
-                $(t).addClass('beteiligte_Verbandseinsatze_hiding');
+                $(t).addClass('beteiligte_Verbands_missionen_hiding');
             })
             $(geplante_einsatze).map((e,t)=>{
                 einsatzarray_beteiligte_eigene_mission.push($(t).attr('mission_id'));
-                $(t).addClass('beteiligte_Verbandseinsatze_hiding');
+                $(t).addClass('beteiligte_Verbands_missionen_hiding');
             })
             //let n_einsatzarray = $('#mission_list_sicherheitswache > .missionSideBarEntry').map((e,t)=>einsatzarray_beteiligte_eigene_mission.push($(t).attr('mission_id')));
         }
         else{
-            $(einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbandseinsatze_hiding'))
-            $(geplante_einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbandseinsatze_hiding'))
+            $(einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
+            $(geplante_einsatze).map((e,t)=>$(t).removeClass('beteiligte_Verbands_missionen_hiding'))
         }
         mission_hide()
     }
     //Blendet die Fahrzeuge aus in der Fahrzeugliste bei status 3 4 6
-    function f_statusVehicle(){
-        if(statusVehicle){
+    function f_fahrzeuge_im_einsatz(){
+        if(fahrzeuge_im_einsatz){
             einsatzarray_vehicle=new Array()
             $($('.building_list_li')).removeClass('hideBuildingType')
             $($('.label.label-default.vehicle_building_list_button.lightbox-open')).parent().show()
@@ -304,8 +404,8 @@
         fahrzeuge_hide()
     }
     // blendet eigene Gebäude aus und fügt sie wieder ein
-    function f_myBuilding(){
-        if(myBuilding) $(".leaflet-interactive[src*='building']").hide();
+    function f_eigene_gebaude(){
+        if(eigene_gebaude) $(".leaflet-interactive[src*='building']").hide();
         else $(".leaflet-interactive[src*='building']").show();
     }
 })();
